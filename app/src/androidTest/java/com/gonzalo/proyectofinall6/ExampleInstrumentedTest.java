@@ -1,4 +1,4 @@
-package com.gonzaluli.proyectofinall6;
+package com.gonzalo.proyectofinall6;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.gonzaluli.proyectofinall6", appContext.getPackageName());
+        assertEquals("com.gonzalo.proyectofinall6", appContext.getPackageName());
     }
 }

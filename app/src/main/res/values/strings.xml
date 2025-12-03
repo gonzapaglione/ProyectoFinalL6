@@ -1,3 +1,42 @@
 <resources>
     <string name="app_name">ProyectoFinalL6</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_title">Bienvenido de nuevo</string>
+    <string name="login_subtitle">Inicia sesión para gestionar tus turnos.</string>
+    <string name="login_email_label">Email</string>
+    <string name="login_email_hint">ejemplo@email.com</string>
+    <string name="login_password_label">Contraseña</string>
+    <string name="login_forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="login_password_hint">Ingresa tu contraseña</string>
+    <string name="login_remember_me">Recordar mi sesión</string>
+    <string name="login_button">Ingresar</string>
+    <string name="login_no_account">¿No tienes una cuenta? </string>
+    <string name="login_register_here">Regístrate aquí</string>
+
+    <!-- Registration Part 1 -->
+    <string name="register_title_pt1">Crea tu cuenta</string>
+    <string name="register_subtitle_pt1">Regístrate para gestionar tus turnos</string>
+    <string name="register_name_label">Nombre</string>
+    <string name="register_name_hint">Ingresa tu nombre</string>
+    <string name="register_lastname_label">Apellido</string>
+    <string name="register_lastname_hint">Ingresa tu apellido</string>
+    <string name="register_email_label">Email</string>
+    <string name="register_email_hint_pt1">ejemplo@email.com</string>
+    <string name="register_password_label">Contraseña</string>
+    <string name="register_password_hint_pt1">Crea una contraseña segura</string>
+    <string name="register_password_repeat_label">Repite tu contraseña</string>
+    <string name="register_password_repeat_hint_pt1">Confirma tu contraseña</string>
+    <string name="register_next_button">Siguiente</string>
+
+    <!-- Registration Part 2 -->
+    <string name="register_title_pt2">Crea tu cuenta</string>
+    <string name="register_subtitle_pt2">Unos datos más y terminamos</string>
+    <string name="register_dni_label">DNI</string>
+    <string name="register_dni_hint">Ingresa tu DNI sin puntos</string>
+    <string name="register_address_label">Dirección</string>
+    <string name="register_address_hint">Ingresa tu dirección</string>
+    <string name="register_coverage_label">Coberturas</string>
+    <string name="register_coverage_prompt">Seleccione una o mas opciones</string>
+    <string name="register_button">Registrar</string>
 </resources>

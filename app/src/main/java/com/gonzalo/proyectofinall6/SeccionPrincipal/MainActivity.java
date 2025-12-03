@@ -1,4 +1,4 @@
-package com.gonzaluli.proyectofinall6;
+package com.gonzalo.proyectofinall6.SeccionPrincipal;
 
 import android.os.Bundle;
 
@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.gonzalo.proyectofinall6.R;
+import com.gonzalo.proyectofinall6.R.layout.*;
 
 public class MainActivity extends AppCompatActivity {
 

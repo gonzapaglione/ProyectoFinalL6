@@ -1,4 +1,4 @@
-package com.gonzaluli.proyectofinall6;
+package com.gonzalo.proyectofinall6;
 
 import org.junit.Test;
 
