@@ -5,12 +5,12 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SeccionPrincipal.MainActivity">
+    tools:context=".Secciones.MainActivity">
 
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
-        android:name="com.gonzalo.proyectofinall6.SeccionPrincipal.FragmentoLogin"
+        android:name="com.gonzalo.proyectofinall6.Secciones.LoginRegistro.FragmentoLogin"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

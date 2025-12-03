@@ -1,4 +1,4 @@
-package com.gonzalo.proyectofinall6.SeccionPrincipal;
+package com.gonzalo.proyectofinall6.Secciones.LoginRegistro;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -8,14 +8,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gonzalo.proyectofinall6.R;
-import com.gonzalo.proyectofinall6.databinding.FragmentoLoginBinding;
+import com.gonzalo.proyectofinall6.databinding.FragmentoRegistroPt2Binding;
 
-public class FragmentoLogin extends Fragment {
+public class FragmentoRegistroPt2 extends Fragment {
 
-    private FragmentoLoginBinding binding;
+    private FragmentoRegistroPt2Binding binding;
 
-    public FragmentoLogin() {
+    public FragmentoRegistroPt2() {
         // Required empty public constructor
     }
 
@@ -23,7 +22,7 @@ public class FragmentoLogin extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment using View Binding
-        binding = FragmentoLoginBinding.inflate(inflater, container, false);
+        binding = FragmentoRegistroPt2Binding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -31,16 +30,11 @@ public class FragmentoLogin extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.tvRegistrarse.setOnClickListener(v -> {
-            getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainerView, new FragmentoRegistroPt1())
-                .addToBackStack(null) // Permite volver al fragmento de login
-                .commit();
-        });
-
-        // También puedes añadir la lógica para el botón de ingreso aquí
-        // binding.btnIngresar.setOnClickListener(v -> {
-        //     // Lógica del botón de ingreso
+        // Ahora puedes acceder a tus vistas de forma segura a través del objeto binding
+        // Por ejemplo:
+        // binding.tilDni.setHint("Nuevo Hint para DNI");
+        // binding.btnRegistrar.setOnClickListener(v -> {
+        //     // Lógica del botón de registro
         // });
     }
 
