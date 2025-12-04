@@ -1,66 +1,164 @@
 package com.gonzalo.proyectofinall6.Secciones.Inicio;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.button.MaterialButton;
+import com.gonzalo.proyectofinall6.Secciones.MainActivity;
 import com.gonzalo.proyectofinall6.R;
+import com.gonzalo.proyectofinall6.api.ApiService;
+import com.gonzalo.proyectofinall6.api.RetrofitClient;
+import com.gonzalo.proyectofinall6.modelos.Paciente;
+import com.gonzalo.proyectofinall6.modelos.PacienteResponse;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentoPerfil#newInstance} factory method to
- * create an instance of this fragment.
- */
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class FragmentoPerfil extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private EditText etNombre, etApellido, etDni, etTelefono, etDireccion, etEmail;
+    private TextView tvUsername, tvEmailHeader, tvChangePassword;
+    private MaterialButton btnEditarInformacion, btnLogout;
+    private ApiService apiService;
+    private boolean isEditing = false;
 
     public FragmentoPerfil() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentoPerfil.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FragmentoPerfil newInstance(String param1, String param2) {
-        FragmentoPerfil fragment = new FragmentoPerfil();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        apiService = RetrofitClient.getApiService();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragmento_perfil, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        bindViews(view);
+        loadPatientData();
+
+        btnEditarInformacion.setOnClickListener(v -> toggleEditState());
+        btnLogout.setOnClickListener(v -> logout());
+
+    }
+
+    private void bindViews(View view) {
+        etNombre = view.findViewById(R.id.etNombre);
+        etApellido = view.findViewById(R.id.etApellido);
+        etDni = view.findViewById(R.id.etDni);
+        etTelefono = view.findViewById(R.id.etTelefono);
+        etDireccion = view.findViewById(R.id.etDireccion);
+        etEmail = view.findViewById(R.id.etEmail);
+        tvUsername = view.findViewById(R.id.tvUsernameHeader);
+        tvEmailHeader = view.findViewById(R.id.tvEmailHeader);
+        btnEditarInformacion = view.findViewById(R.id.btnEditarInformacion);
+        btnLogout = view.findViewById(R.id.btnLogout);
+        tvChangePassword = view.findViewById(R.id.tvChangePassword);
+    }
+
+    private void loadPatientData() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        int patientIdInt = sharedPreferences.getInt("user_id", -1);
+
+        if (patientIdInt != -1) {
+            String patientId = String.valueOf(patientIdInt);
+            apiService.getPaciente(patientId).enqueue(new Callback<PacienteResponse>() {
+                @Override
+                public void onResponse(Call<PacienteResponse> call, Response<PacienteResponse> response) {
+                    if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                        populateUI(response.body().getData());
+                    } else {
+                        Toast.makeText(getContext(), "Error al cargar datos", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<PacienteResponse> call, Throwable t) {
+                    Toast.makeText(getContext(), "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private void populateUI(Paciente paciente) {
+        etNombre.setText(paciente.getNombre());
+        etApellido.setText(paciente.getApellido());
+        etDni.setText(paciente.getDni());
+        etTelefono.setText(paciente.getTelefono());
+        etDireccion.setText(paciente.getDireccion());
+        etEmail.setText(paciente.getEmail());
+
+        if (tvUsername != null) tvUsername.setText(paciente.getNombre() + " " + paciente.getApellido());
+        if (tvEmailHeader != null) tvEmailHeader.setText(paciente.getEmail());
+
+    }
+
+    private void toggleEditState() {
+        isEditing = !isEditing;
+        enableEdit(isEditing);
+
+        if (isEditing) {
+            btnEditarInformacion.setText("Guardar Cambios");
+            //btnEditarInformacion.setIconResource(R.drawable.ic_save); // Add ic_save to drawables
+        } else {
+            btnEditarInformacion.setText("Editar Información");
+            btnEditarInformacion.setIconResource(android.R.drawable.ic_menu_edit);
+            // TODO: Add logic to save data to the backend
+            Toast.makeText(getContext(), "Cambios guardados (simulado)", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void enableEdit(boolean enable) {
+        etNombre.setEnabled(enable);
+        etApellido.setEnabled(enable);
+        etDni.setEnabled(enable);
+        etTelefono.setEnabled(enable);
+        etDireccion.setEnabled(enable);
+        // etEmail.setEnabled(enable); // Usually, email is not editable
+    }
+
+    private void logout() {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Cerrar Sesión")
+                .setMessage("¿Estás seguro de que quieres cerrar sesión?")
+                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Limpiar SharedPreferences
+                        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.clear();
+                        editor.apply();
+
+                        // Redirigir al usuario a la pantalla de login
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 }

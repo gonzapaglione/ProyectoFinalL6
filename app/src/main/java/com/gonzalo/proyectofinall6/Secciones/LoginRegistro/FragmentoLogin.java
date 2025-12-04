@@ -11,12 +11,14 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.gonzalo.proyectofinall6.R;
 import com.gonzalo.proyectofinall6.Secciones.Inicio.HomeActivity;
 import com.gonzalo.proyectofinall6.databinding.FragmentoLoginBinding;
-import com.gonzalo.proyectofinall6.models.LoginRequest;
-import com.gonzalo.proyectofinall6.models.LoginResponse;
+import com.gonzalo.proyectofinall6.modelos.LoginRequest;
+import com.gonzalo.proyectofinall6.modelos.LoginResponse;
 import com.gonzalo.proyectofinall6.api.RetrofitClient;
 
 import retrofit2.Call;
@@ -43,10 +45,12 @@ public class FragmentoLogin extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.tvRegistrarse.setOnClickListener(v -> {
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragmentContainerView, new FragmentoRegistroPt1())
-                    .addToBackStack(null)
-                    .commit();
+            try {
+                // Usamos NavController para navegar a la siguiente pantalla
+                Navigation.findNavController(v).navigate(R.id.action_fragmentoLogin_to_fragmentoRegistroPt1);
+            } catch (Exception e) {
+                Toast.makeText(getContext(), "Error de navegación: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
 
         binding.btnIngresar.setOnClickListener(v -> {
@@ -97,6 +101,7 @@ public class FragmentoLogin extends Fragment {
 
                                 // Navegar a la pantalla principal
                                 Intent intent = new Intent(getActivity(), HomeActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 getActivity().finish(); // Cierra la actividad de Login
 

@@ -132,7 +132,7 @@
                 android:layout_height="60dp"
                 android:text="Ir a reserva de turno"
                 android:textAllCaps="false"
-                android:backgroundTint="@color/purple_primary"
+                android:backgroundTint="@color/main_blue"
                 app:iconGravity="end"
                 app:cornerRadius="8dp"/>
         </LinearLayout>

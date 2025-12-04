@@ -39,6 +39,18 @@
             app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
 
         <TextView
+            android:id="@+id/tvPaso2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Paso 2 de 2"
+            android:textColor="#6B7280"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitulo2" />
+
+        <TextView
             android:id="@+id/tvSubtitulo2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,7 +60,7 @@
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitulo2" />
+            app:layout_constraintTop_toBottomOf="@+id/tvPaso2" />
 
         <TextView
             android:id="@+id/lblDni"
@@ -79,15 +91,32 @@
             app:layout_constraintTop_toBottomOf="@+id/lblDni" />
 
         <TextView
-            android:id="@+id/tvDniError"
+            android:id="@+id/lblTelefono"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="12sp"
-            android:visibility="gone"
+            android:layout_marginTop="16dp"
+            android:text="@string/register_phone_label"
+            android:textColor="#374151"
+            android:textSize="14sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etDni" />
+
+        <EditText
+            android:id="@+id/etTelefono"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_input_border"
+            android:hint="@string/register_phone_hint"
+            android:inputType="phone"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColorHint="#9CA3AF"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblTelefono" />
 
         <TextView
             android:id="@+id/lblDireccion"
@@ -99,7 +128,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvDniError" />
+            app:layout_constraintTop_toBottomOf="@+id/etTelefono" />
 
         <EditText
             android:id="@+id/etDireccion"
@@ -118,17 +147,6 @@
             app:layout_constraintTop_toBottomOf="@+id/lblDireccion" />
 
         <TextView
-            android:id="@+id/tvDireccionError"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="12sp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etDireccion" />
-
-        <TextView
             android:id="@+id/lblCobertura"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -138,34 +156,35 @@
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvDireccionError" />
+            app:layout_constraintTop_toBottomOf="@+id/etDireccion" />
 
-        <AutoCompleteTextView
-            android:id="@+id/actvCobertura"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCobertura"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/bg_input_border"
-            android:hint="@string/register_coverage_prompt"
-            android:inputType="none"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColorHint="#9CA3AF"
-            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblCobertura" />
+            app:layout_constraintTop_toBottomOf="@+id/lblCobertura">
 
-        <TextView
-            android:id="@+id/tvCoberturaError"
-            android:layout_width="wrap_content"
+            <AutoCompleteTextView
+                android:id="@+id/actvCobertura"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/register_coverage_prompt"
+                android:inputType="none" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupCoberturas"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="12sp"
-            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/actvCobertura" />
+            app:layout_constraintTop_toBottomOf="@+id/tilCobertura" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRegistrar"
@@ -180,7 +199,7 @@
             app:cornerRadius="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCoberturaError" />
+            app:layout_constraintTop_toBottomOf="@+id/chipGroupCoberturas" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

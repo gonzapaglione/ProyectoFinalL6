@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/register_navigation"
+    app:startDestination="@id/fragmentoLogin">
+
+    <fragment
+        android:id="@+id/fragmentoLogin"
+        android:name="com.gonzalo.proyectofinall6.Secciones.LoginRegistro.FragmentoLogin"
+        android:label="Login"
+        tools:layout="@layout/fragmento_login">
+        <action
+            android:id="@+id/action_fragmentoLogin_to_fragmentoRegistroPt1"
+            app:destination="@id/fragmentoRegistroPt1" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragmentoRegistroPt1"
+        android:name="com.gonzalo.proyectofinall6.Secciones.LoginRegistro.FragmentoRegistroPt1"
+        android:label="Registro - Parte 1"
+        tools:layout="@layout/fragmento_registro_pt1">
+        <action
+            android:id="@+id/action_fragmentoRegistroPt1_to_fragmentoRegistroPt2"
+            app:destination="@id/fragmentoRegistroPt2" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragmentoRegistroPt2"
+        android:name="com.gonzalo.proyectofinall6.Secciones.LoginRegistro.FragmentoRegistroPt2"
+        android:label="Registro - Parte 2"
+        tools:layout="@layout/fragmento_registro_pt2">
+        <action
+            android:id="@+id/action_fragmentoRegistroPt2_to_fragmentoLogin"
+            app:destination="@id/fragmentoLogin"
+            app:popUpTo="@id/fragmentoLogin"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+</navigation>

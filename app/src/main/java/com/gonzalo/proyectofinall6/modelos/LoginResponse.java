@@ -1,4 +1,4 @@
-package com.gonzalo.proyectofinall6.models;
+package com.gonzalo.proyectofinall6.modelos;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -39,6 +39,18 @@
             app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
 
         <TextView
+            android:id="@+id/tvPaso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Paso 1 de 2"
+            android:textColor="#6B7280"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitulo" />
+
+        <TextView
             android:id="@+id/tvSubtitulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,7 +60,7 @@
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitulo" />
+            app:layout_constraintTop_toBottomOf="@+id/tvPaso" />
 
         <TextView
             android:id="@+id/lblNombre"
@@ -79,17 +91,6 @@
             app:layout_constraintTop_toBottomOf="@+id/lblNombre" />
 
         <TextView
-            android:id="@+id/tvNombreError"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="12sp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etNombre" />
-
-        <TextView
             android:id="@+id/lblApellido"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -99,7 +100,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvNombreError" />
+            app:layout_constraintTop_toBottomOf="@+id/etNombre" />
 
         <EditText
             android:id="@+id/etApellido"
@@ -118,17 +119,6 @@
             app:layout_constraintTop_toBottomOf="@+id/lblApellido" />
 
         <TextView
-            android:id="@+id/tvApellidoError"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="12sp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etApellido" />
-
-        <TextView
             android:id="@+id/lblEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -138,7 +128,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvApellidoError" />
+            app:layout_constraintTop_toBottomOf="@+id/etApellido" />
 
         <EditText
             android:id="@+id/etEmail"
@@ -157,17 +147,6 @@
             app:layout_constraintTop_toBottomOf="@+id/lblEmail" />
 
         <TextView
-            android:id="@+id/tvEmailError"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="12sp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etEmail" />
-
-        <TextView
             android:id="@+id/lblPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -177,7 +156,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvEmailError" />
+            app:layout_constraintTop_toBottomOf="@+id/etEmail" />
 
         <EditText
             android:id="@+id/etPassword"
@@ -196,17 +175,6 @@
             app:layout_constraintTop_toBottomOf="@+id/lblPassword" />
 
         <TextView
-            android:id="@+id/tvPasswordError"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="12sp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etPassword" />
-
-        <TextView
             android:id="@+id/lblPasswordRepeat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -216,7 +184,7 @@
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvPasswordError" />
+            app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
         <EditText
             android:id="@+id/etPasswordRepeat"
@@ -234,17 +202,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lblPasswordRepeat" />
 
-        <TextView
-            android:id="@+id/tvPasswordRepeatError"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="12sp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etPasswordRepeat" />
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSiguiente"
             android:layout_width="0dp"
@@ -258,7 +215,7 @@
             app:cornerRadius="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvPasswordRepeatError" />
+            app:layout_constraintTop_toBottomOf="@+id/etPasswordRepeat" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

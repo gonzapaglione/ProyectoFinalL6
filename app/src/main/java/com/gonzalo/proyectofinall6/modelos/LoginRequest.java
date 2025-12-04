@@ -1,4 +1,4 @@
-package com.gonzalo.proyectofinall6.models;
+package com.gonzalo.proyectofinall6.modelos;
 
 public class LoginRequest {
     private String email;
