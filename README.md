@@ -13,6 +13,6 @@ En este repositorio se desarrolla la aplicación solicitada según los requerimi
 
 - **Api utilizada:**
 - https://github.com/gonzapaglione/api_clinica_app
-- La documentacion de la api se encuentra en el documento de requerimientos, en la pestaña de "API"
+
 
 
