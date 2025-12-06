@@ -1,9 +1,11 @@
 package com.gonzalo.proyectofinall6.api;
 
+import com.gonzalo.proyectofinall6.modelos.HistorialResponse;
 import com.gonzalo.proyectofinall6.modelos.LoginRequest;
 import com.gonzalo.proyectofinall6.modelos.LoginResponse;
 import com.gonzalo.proyectofinall6.modelos.ObrasSocialesResponse;
 import com.gonzalo.proyectofinall6.modelos.PacienteResponse;
+import com.gonzalo.proyectofinall6.modelos.ProximosTurnosResponse;
 import com.gonzalo.proyectofinall6.modelos.RegistroRequest;
 import com.gonzalo.proyectofinall6.modelos.RegistroResponse;
 
@@ -26,4 +28,11 @@ public interface ApiService {
 
     @POST("api/auth/registro/paciente")
     Call<RegistroResponse> registrarPaciente(@Body RegistroRequest registroRequest);
+
+
+    @GET("api/turnos/paciente/{id}/historial")
+    Call<HistorialResponse> getHistorial(@Path("id") long pacienteId);
+
+    @GET("api/turnos/paciente/{id}/proximos")
+    Call<ProximosTurnosResponse> getProximos(@Path("id") long pacienteId);
 }
