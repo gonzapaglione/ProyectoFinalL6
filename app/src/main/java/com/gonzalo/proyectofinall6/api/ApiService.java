@@ -1,5 +1,6 @@
 package com.gonzalo.proyectofinall6.api;
 
+import com.gonzalo.proyectofinall6.modelos.CancelarTurnoRequest;
 import com.gonzalo.proyectofinall6.modelos.HistorialResponse;
 import com.gonzalo.proyectofinall6.modelos.LoginRequest;
 import com.gonzalo.proyectofinall6.modelos.LoginResponse;
@@ -35,4 +36,7 @@ public interface ApiService {
 
     @GET("api/turnos/paciente/{id}/proximos")
     Call<ProximosTurnosResponse> getProximos(@Path("id") long pacienteId);
+
+    @POST("api/turnos/cancelar")
+    Call<Void> cancelarTurno(@Body CancelarTurnoRequest request);
 }

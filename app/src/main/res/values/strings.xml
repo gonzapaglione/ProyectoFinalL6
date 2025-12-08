@@ -15,7 +15,7 @@
     <string name="login_no_account">¿No tienes una cuenta? </string>
     <string name="login_register_here">Regístrate aquí</string>
 
-    <!-- Registration Part 1 -->
+    <!-- Registro parte 1 -->
     <string name="register_title_pt1">Crea tu cuenta</string>
     <string name="register_subtitle_pt1">Regístrate para gestionar tus turnos</string>
     <string name="register_name_label">Nombre</string>
@@ -32,8 +32,9 @@
     <string name="register_password_repeat_hint_pt1">Confirma tu contraseña</string>
     <string name="register_next_button">Siguiente</string>
 
-    <!-- Registration Part 2 -->
+    <!-- Registro parte 2 -->
     <string name="register_title_pt2">Crea tu cuenta</string>
+    <string name="register_step_2_of_2">Paso 2 de 2</string>
     <string name="register_subtitle_pt2">Unos datos más y terminamos</string>
     <string name="register_dni_label">DNI</string>
     <string name="register_dni_hint">Ingresa tu DNI sin puntos</string>
@@ -67,5 +68,25 @@
     <string name="profile_dni_hint">Ingresa tu DNI</string>
     <string name="profile_phone_hint">Ingresa tu teléfono</string>
     <string name="profile_address_hint">Ingresa tu dirección</string>
+
+    <!-- Reserva de turno-->
+    <string name="reservar_nuevo_turno">Reservar nuevo turno</string>
+    <string name="volver">Volver</string>
+    <string name="siguiente">Siguiente</string>
+    <string name="selecciona_una_opcion">Selecciona una opción</string>
+
+    <!-- Fragmento paso 1-->
+    <string name="maintext_paso1">Selecciona tu odontólogo</string>
+
+    <!-- Fragmento paso 2-->
+    <string name="maintext_paso2">Selecciona fecha y hora</string>
+    <string name="horarios_disponibles">Horarios disponibles:</string>
+
+    <!-- Fragmento paso 3-->
+    <string name="maintext_paso3">Selecciona un motivo de consulta</string>
+
+    <!-- Fragmento paso 4-->
+    <string name="maintext_paso4">Selecciona una cobertura</string>
+    <string name="ver_resumen">Ver resumen</string>
 
 </resources>

@@ -17,18 +17,21 @@ import com.gonzalo.proyectofinall6.R;
 import com.gonzalo.proyectofinall6.adaptadores.TurnosAdapter;
 import com.gonzalo.proyectofinall6.api.RetrofitClient;
 import com.gonzalo.proyectofinall6.api.ApiService;
+import com.gonzalo.proyectofinall6.modelos.CancelarTurnoRequest;
 import com.gonzalo.proyectofinall6.modelos.HistorialResponse;
 import com.gonzalo.proyectofinall6.modelos.PacienteResponse;
 import com.gonzalo.proyectofinall6.modelos.ProximosTurnosResponse;
 import com.gonzalo.proyectofinall6.modelos.Turno;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FragmentoTurnos extends Fragment {
+public class FragmentoTurnos extends Fragment implements TurnosAdapter.OnTurnoActionListener {
 
     private RecyclerView rvUpcoming, rvHistory;
     private TurnosAdapter upcomingAdapter, historyAdapter;
@@ -69,20 +72,26 @@ public class FragmentoTurnos extends Fragment {
         loadPacienteIdAndFetchTurnos();
 
         btnReservarTurno.setOnClickListener(v -> {
+            // TODO: Implementar navegación para reservar turno
+            Toast.makeText(getContext(), "Funcionalidad no implementada", Toast.LENGTH_SHORT).show();
+        });
+
+        FloatingActionButton fabReservarTurno = view.findViewById(R.id.fabReservarTurno);
+        fabReservarTurno.setOnClickListener(v -> {
+            // TODO: Implementar navegación para reservar turno
             Toast.makeText(getContext(), "Funcionalidad no implementada", Toast.LENGTH_SHORT).show();
         });
     }
 
     private void setupRecyclerViews() {
         rvUpcoming.setLayoutManager(new LinearLayoutManager(getContext()));
-        upcomingAdapter = new TurnosAdapter(upcomingTurnos, getContext());
+        upcomingAdapter = new TurnosAdapter(upcomingTurnos, getContext(), this);
         rvUpcoming.setAdapter(upcomingAdapter);
 
         rvHistory.setLayoutManager(new LinearLayoutManager(getContext()));
-        historyAdapter = new TurnosAdapter(historyTurnos, getContext());
+        historyAdapter = new TurnosAdapter(historyTurnos, getContext(), this);
         rvHistory.setAdapter(historyAdapter);
     }
-
     private void loadPacienteIdAndFetchTurnos() {
         int userId = sharedPreferences.getInt("user_id", -1);
         if (userId != -1) {
@@ -119,25 +128,33 @@ public class FragmentoTurnos extends Fragment {
         apiService.getProximos(pacienteId).enqueue(new Callback<ProximosTurnosResponse>() {
             @Override
             public void onResponse(Call<ProximosTurnosResponse> call, Response<ProximosTurnosResponse> response) {
+                upcomingTurnos.clear();
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     List<Turno> turnos = response.body().getData();
                     if (turnos != null && !turnos.isEmpty()) {
-                        upcomingTurnos.clear();
+                        // Si hay turnos, se muestran en la lista
                         upcomingTurnos.addAll(turnos);
-                        upcomingAdapter.notifyDataSetChanged();
                         rvUpcoming.setVisibility(View.VISIBLE);
                         cardEmptyState.setVisibility(View.GONE);
                     } else {
-                        showUpcomingEmptyState();
+                        // Si no hay turnos, se muestra el empty state
+                        rvUpcoming.setVisibility(View.GONE);
+                        cardEmptyState.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    showUpcomingEmptyState();
+                    // Si la llamada falla, también se muestra el empty state
+                    rvUpcoming.setVisibility(View.GONE);
+                    cardEmptyState.setVisibility(View.VISIBLE);
                 }
+                upcomingAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onFailure(Call<ProximosTurnosResponse> call, Throwable t) {
-                showUpcomingEmptyState();
+                upcomingTurnos.clear();
+                upcomingAdapter.notifyDataSetChanged();
+                rvUpcoming.setVisibility(View.GONE);
+                cardEmptyState.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(), "Error de red al cargar próximos turnos", Toast.LENGTH_SHORT).show();
             }
         });
@@ -176,8 +193,32 @@ public class FragmentoTurnos extends Fragment {
         rvHistory.setVisibility(View.GONE);
     }
 
-    private void showUpcomingEmptyState() {
-        rvUpcoming.setVisibility(View.GONE);
-        cardEmptyState.setVisibility(View.VISIBLE);
+    // Implementación de la interfaz del adaptador
+    @Override
+    public void onCancelarTurno(int turnoId, String motivo) {
+        CancelarTurnoRequest request = new CancelarTurnoRequest(turnoId, motivo);
+        apiService.cancelarTurno(request).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), "Turno cancelado exitosamente", Toast.LENGTH_SHORT).show();
+                    loadPacienteIdAndFetchTurnos(); // Recargamos los datos
+                } else {
+                    Toast.makeText(getContext(), "Error al cancelar el turno", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(getContext(), "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onVerDetalle(int turnoId) {
+        Toast.makeText(getContext(), "Viendo detalle del turno...", Toast.LENGTH_SHORT).show();
+        // TODO: Aquí debes implementar la navegación a la pantalla de detalle
+        // del turno, pasando el turnoId como argumento.
     }
 }
