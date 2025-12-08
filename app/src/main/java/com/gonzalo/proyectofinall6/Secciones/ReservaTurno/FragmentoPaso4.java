@@ -12,10 +12,10 @@ import com.gonzalo.proyectofinall6.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ResumenTurno#newInstance} factory method to
+ * Use the {@link FragmentoPaso4#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ResumenTurno extends Fragment {
+public class FragmentoPaso4 extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class ResumenTurno extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ResumenTurno() {
+    public FragmentoPaso4() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class ResumenTurno extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ResumenTurno.
+     * @return A new instance of fragment Paso4.
      */
     // TODO: Rename and change types and number of parameters
-    public static ResumenTurno newInstance(String param1, String param2) {
-        ResumenTurno fragment = new ResumenTurno();
+    public static FragmentoPaso4 newInstance(String param1, String param2) {
+        FragmentoPaso4 fragment = new FragmentoPaso4();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class ResumenTurno extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_resumen_turno, container, false);
+        return inflater.inflate(R.layout.fragment_paso4, container, false);
     }
 }

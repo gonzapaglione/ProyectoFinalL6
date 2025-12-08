@@ -1,6 +1,7 @@
 package com.gonzalo.proyectofinall6.Secciones.Inicio;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -9,10 +10,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gonzalo.proyectofinall6.R;
+import com.gonzalo.proyectofinall6.Secciones.ReservaTurno.Reservacion;
 import com.gonzalo.proyectofinall6.api.ApiService;
 import com.gonzalo.proyectofinall6.api.RetrofitClient;
 import com.gonzalo.proyectofinall6.modelos.Paciente;
@@ -26,6 +29,8 @@ public class FragmentoHome extends Fragment {
 
     private TextView tvGreeting;
     private ApiService apiService;
+
+    private Button btnReservarTurno;
 
     public FragmentoHome() {
         // Required empty public constructor
@@ -42,6 +47,7 @@ public class FragmentoHome extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragmento_home, container, false);
         tvGreeting = view.findViewById(R.id.tvGreeting);
+        btnReservarTurno = view.findViewById(R.id.btnReservarTurno);
         return view;
     }
 
@@ -49,6 +55,11 @@ public class FragmentoHome extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadPatientData();
+
+        btnReservarTurno.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), Reservacion.class);
+            startActivity(intent);
+        });
     }
 
     private void loadPatientData() {

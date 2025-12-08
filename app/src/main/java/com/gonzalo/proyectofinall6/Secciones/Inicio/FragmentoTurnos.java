@@ -1,6 +1,7 @@
 package com.gonzalo.proyectofinall6.Secciones.Inicio;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.gonzalo.proyectofinall6.R;
+import com.gonzalo.proyectofinall6.Secciones.ReservaTurno.Reservacion;
 import com.gonzalo.proyectofinall6.adaptadores.TurnosAdapter;
 import com.gonzalo.proyectofinall6.api.RetrofitClient;
 import com.gonzalo.proyectofinall6.api.ApiService;
@@ -72,14 +74,14 @@ public class FragmentoTurnos extends Fragment implements TurnosAdapter.OnTurnoAc
         loadPacienteIdAndFetchTurnos();
 
         btnReservarTurno.setOnClickListener(v -> {
-            // TODO: Implementar navegación para reservar turno
-            Toast.makeText(getContext(), "Funcionalidad no implementada", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getContext(), Reservacion.class);
+            startActivity(intent);
         });
 
         FloatingActionButton fabReservarTurno = view.findViewById(R.id.fabReservarTurno);
         fabReservarTurno.setOnClickListener(v -> {
-            // TODO: Implementar navegación para reservar turno
-            Toast.makeText(getContext(), "Funcionalidad no implementada", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getContext(), Reservacion.class);
+            startActivity(intent);
         });
     }
 

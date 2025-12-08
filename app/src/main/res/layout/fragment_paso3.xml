@@ -6,20 +6,6 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:text="Paso 3 de 4"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:text="@string/maintext_paso3"
-        android:textColor="@color/black"
-        android:layout_marginBottom="24dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
@@ -44,19 +30,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBack"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:text="@string/volver"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:textColor="@color/main_blue"
+            android:layout_height="wrap_content"
+            app:strokeColor="@color/main_blue"
+            app:strokeWidth="2dp"
+            app:backgroundTint="@color/white"
+            />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnNext"
             android:text="@string/siguiente"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:backgroundTint="@color/main_blue"
+            />
+
     </LinearLayout>
 </LinearLayout>

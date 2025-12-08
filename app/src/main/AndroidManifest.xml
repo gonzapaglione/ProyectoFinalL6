@@ -16,7 +16,7 @@
         android:theme="@style/Theme.ProyectoFinalL6"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Secciones.ReservaTurno.Paso3"
+            android:name=".Secciones.ReservaTurno.FragmentoPaso3"
             android:exported="false" />
         <activity
             android:name=".Secciones.ReservaTurno.Reservacion"

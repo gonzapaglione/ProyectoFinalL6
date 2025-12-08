@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/reserva_navigation"
+    app:startDestination="@id/paso1Fragment">
+
+    <fragment
+        android:id="@+id/paso1Fragment"
+        android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.FragmentoPaso1"
+        android:label="fragment_paso1"
+        tools:layout="@layout/fragment_paso1" >
+        <action
+            android:id="@+id/action_paso1Fragment_to_paso2Fragment"
+            app:destination="@id/paso2Fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/paso2Fragment"
+        android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.FragmentoPaso2"
+        android:label="fragment_paso2"
+        tools:layout="@layout/fragment_paso2" >
+        <action
+            android:id="@+id/action_paso2Fragment_to_paso3Fragment"
+            app:destination="@id/paso3Fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/paso3Fragment"
+        android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.FragmentoPaso3"
+        android:label="fragment_paso3"
+        tools:layout="@layout/fragment_paso3" >
+        <action
+            android:id="@+id/action_paso3Fragment_to_paso4Fragment"
+            app:destination="@id/paso4Fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/paso4Fragment"
+        android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.FragmentoPaso4"
+        android:label="fragment_paso4"
+        tools:layout="@layout/fragment_paso4" >
+        <action
+            android:id="@+id/action_paso4Fragment_to_resumenTurnoFragment"
+            app:destination="@id/resumenTurnoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/resumenTurnoFragment"
+        android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.FragmentoResumenTurno"
+        android:label="fragment_resumen_turno"
+        tools:layout="@layout/fragment_resumen_turno" />
+
+</navigation>

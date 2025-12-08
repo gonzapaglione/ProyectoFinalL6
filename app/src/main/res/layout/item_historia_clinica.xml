@@ -98,12 +98,14 @@
             app:layout_constraintTop_toBottomOf="@id/tvReason"
             tools:text="Tratamiento: Evolución" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAction"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            app:cornerRadius="8dp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTreatment"

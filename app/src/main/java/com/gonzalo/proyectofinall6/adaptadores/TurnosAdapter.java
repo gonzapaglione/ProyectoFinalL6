@@ -5,7 +5,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -13,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.gonzalo.proyectofinall6.R;
 import com.gonzalo.proyectofinall6.modelos.Turno;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class TurnosAdapter extends RecyclerView.Adapter<TurnosAdapter.TurnoViewH
 
         TextView tvDate, tvDoctor, tvCoverage, tvReason, tvTreatment, tvStatusText;
         MaterialCardView chipStatus;
-        Button btnAction;
+        MaterialButton btnAction;
 
 
         public TurnoViewHolder(@NonNull View itemView) {
@@ -90,6 +90,7 @@ public class TurnosAdapter extends RecyclerView.Adapter<TurnosAdapter.TurnoViewH
                         tvStatusText.setTextColor(ContextCompat.getColor(context, R.color.status_programmed_text));
                         btnAction.setVisibility(View.VISIBLE);
                         btnAction.setText("Cancelar");
+                        btnAction.setBackgroundColor(ContextCompat.getColor(context, R.color.button_danger_red));
                         btnAction.setOnClickListener(v -> {
                             showCancelarDialog(turno, listener);
                         });
@@ -99,6 +100,7 @@ public class TurnosAdapter extends RecyclerView.Adapter<TurnosAdapter.TurnoViewH
                         tvStatusText.setTextColor(ContextCompat.getColor(context, R.color.status_realized_text));
                         btnAction.setVisibility(View.VISIBLE);
                         btnAction.setText("Ver detalle");
+                        btnAction.setBackgroundColor(ContextCompat.getColor(context, R.color.main_blue));
                         btnAction.setOnClickListener(v -> {
                             if (listener != null) {
                                 listener.onVerDetalle(turno.getIdTurno().intValue());
@@ -110,8 +112,8 @@ public class TurnosAdapter extends RecyclerView.Adapter<TurnosAdapter.TurnoViewH
                         tvStatusText.setTextColor(ContextCompat.getColor(context, R.color.status_cancelled_text));
                         break;
                     case "AUSENTE":
-                        chipStatus.setCardBackgroundColor(ContextCompat.getColor(context, R.color.status_cancelled_bg));
-                        tvStatusText.setTextColor(ContextCompat.getColor(context, R.color.status_cancelled_text));
+                        chipStatus.setCardBackgroundColor(ContextCompat.getColor(context, R.color.status_absent_bg));
+                        tvStatusText.setTextColor(ContextCompat.getColor(context, R.color.status_absent_text));
                         break;
                     default:
                         chipStatus.setVisibility(View.GONE);
