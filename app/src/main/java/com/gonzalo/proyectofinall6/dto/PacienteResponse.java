@@ -1,9 +1,9 @@
-package com.gonzalo.proyectofinall6.modelos;
+package com.gonzalo.proyectofinall6.dto;
 
+import com.gonzalo.proyectofinall6.modelos.Paciente;
 import com.google.gson.annotations.SerializedName;
-import java.util.List;
 
-public class ObrasSocialesResponse {
+public class PacienteResponse {
 
     @SerializedName("success")
     private boolean success;
@@ -12,8 +12,9 @@ public class ObrasSocialesResponse {
     private String message;
 
     @SerializedName("data")
-    private List<ObraSocial> data;
+    private Paciente data;
 
+    // Getters
     public boolean isSuccess() {
         return success;
     }
@@ -22,7 +23,7 @@ public class ObrasSocialesResponse {
         return message;
     }
 
-    public List<ObraSocial> getData() {
+    public Paciente getData() {
         return data;
     }
 }

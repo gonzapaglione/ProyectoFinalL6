@@ -1,4 +1,4 @@
-package com.gonzalo.proyectofinall6.modelos;
+package com.gonzalo.proyectofinall6.dto;
 
 import com.google.gson.annotations.SerializedName;
 

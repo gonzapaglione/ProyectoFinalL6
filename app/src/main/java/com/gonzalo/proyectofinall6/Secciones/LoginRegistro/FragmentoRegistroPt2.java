@@ -16,15 +16,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.chip.Chip;
-import com.gonzalo.proyectofinall6.R;
 import com.gonzalo.proyectofinall6.Secciones.Inicio.HomeActivity;
 import com.gonzalo.proyectofinall6.api.ApiService;
 import com.gonzalo.proyectofinall6.api.RetrofitClient;
 import com.gonzalo.proyectofinall6.databinding.FragmentoRegistroPt2Binding;
 import com.gonzalo.proyectofinall6.modelos.ObraSocial;
-import com.gonzalo.proyectofinall6.modelos.ObrasSocialesResponse;
-import com.gonzalo.proyectofinall6.modelos.RegistroRequest;
-import com.gonzalo.proyectofinall6.modelos.RegistroResponse;
+import com.gonzalo.proyectofinall6.dto.ObrasSocialesResponse;
+import com.gonzalo.proyectofinall6.dto.RegistroRequest;
+import com.gonzalo.proyectofinall6.dto.RegistroResponse;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,5 +1,6 @@
-package com.gonzalo.proyectofinall6.modelos;
+package com.gonzalo.proyectofinall6.dto;
 
+import com.gonzalo.proyectofinall6.modelos.Turno;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;

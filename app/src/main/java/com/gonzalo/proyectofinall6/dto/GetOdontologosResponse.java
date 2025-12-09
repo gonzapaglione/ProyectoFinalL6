@@ -1,8 +1,10 @@
-package com.gonzalo.proyectofinall6.modelos;
+package com.gonzalo.proyectofinall6.dto;
 
 import com.google.gson.annotations.SerializedName;
 
-public class RegistroResponse {
+import java.util.List;
+
+public class GetOdontologosResponse {
 
     @SerializedName("success")
     private boolean success;
@@ -11,9 +13,8 @@ public class RegistroResponse {
     private String message;
 
     @SerializedName("data")
-    private Paciente data;
+    private List<OdontologoResponse> data;
 
-    // Getters
     public boolean isSuccess() {
         return success;
     }
@@ -22,7 +23,7 @@ public class RegistroResponse {
         return message;
     }
 
-    public Paciente getData() {
+    public List<OdontologoResponse> getData() {
         return data;
     }
 }

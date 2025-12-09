@@ -2,53 +2,63 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/reserva_navigation"
-    app:startDestination="@id/paso1Fragment">
+    android:id="@+id/reserva_graph"
+    app:startDestination="@id/fragmentoPaso1">
 
     <fragment
-        android:id="@+id/paso1Fragment"
+        android:id="@+id/fragmentoPaso1"
         android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.FragmentoPaso1"
         android:label="fragment_paso1"
         tools:layout="@layout/fragment_paso1" >
         <action
-            android:id="@+id/action_paso1Fragment_to_paso2Fragment"
-            app:destination="@id/paso2Fragment" />
+            android:id="@+id/action_fragmentoPaso1_to_fragmentoPaso2"
+            app:destination="@id/fragmentoPaso2" />
     </fragment>
 
     <fragment
-        android:id="@+id/paso2Fragment"
+        android:id="@+id/fragmentoPaso2"
         android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.FragmentoPaso2"
         android:label="fragment_paso2"
         tools:layout="@layout/fragment_paso2" >
         <action
-            android:id="@+id/action_paso2Fragment_to_paso3Fragment"
-            app:destination="@id/paso3Fragment" />
+            android:id="@+id/action_fragmentoPaso2_to_fragmentoPaso3"
+            app:destination="@id/fragmentoPaso3" />
     </fragment>
 
     <fragment
-        android:id="@+id/paso3Fragment"
+        android:id="@+id/fragmentoPaso3"
         android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.FragmentoPaso3"
         android:label="fragment_paso3"
         tools:layout="@layout/fragment_paso3" >
         <action
-            android:id="@+id/action_paso3Fragment_to_paso4Fragment"
-            app:destination="@id/paso4Fragment" />
+            android:id="@+id/action_fragmentoPaso3_to_fragmentoPaso4"
+            app:destination="@id/fragmentoPaso4" />
     </fragment>
 
     <fragment
-        android:id="@+id/paso4Fragment"
+        android:id="@+id/fragmentoPaso4"
         android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.FragmentoPaso4"
         android:label="fragment_paso4"
         tools:layout="@layout/fragment_paso4" >
         <action
-            android:id="@+id/action_paso4Fragment_to_resumenTurnoFragment"
-            app:destination="@id/resumenTurnoFragment" />
+            android:id="@+id/action_fragmentoPaso4_to_fragmentoResumenTurno"
+            app:destination="@id/fragmentoResumenTurno" />
     </fragment>
 
     <fragment
-        android:id="@+id/resumenTurnoFragment"
+        android:id="@+id/fragmentoResumenTurno"
         android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.FragmentoResumenTurno"
         android:label="fragment_resumen_turno"
-        tools:layout="@layout/fragment_resumen_turno" />
+        tools:layout="@layout/fragmento_resumen_turno" >
+        <action
+            android:id="@+id/action_fragmentoResumenTurno_to_turnoRegistrado"
+            app:destination="@id/turnoRegistrado" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/turnoRegistrado"
+        android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.TurnoRegistrado"
+        android:label="fragment_turno_registrado"
+        tools:layout="@layout/fragment_turno_registrado" />
 
 </navigation>

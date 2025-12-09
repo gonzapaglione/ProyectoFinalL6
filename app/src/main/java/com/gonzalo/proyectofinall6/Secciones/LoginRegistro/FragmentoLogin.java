@@ -11,14 +11,13 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.gonzalo.proyectofinall6.R;
 import com.gonzalo.proyectofinall6.Secciones.Inicio.HomeActivity;
 import com.gonzalo.proyectofinall6.databinding.FragmentoLoginBinding;
-import com.gonzalo.proyectofinall6.modelos.LoginRequest;
-import com.gonzalo.proyectofinall6.modelos.LoginResponse;
+import com.gonzalo.proyectofinall6.dto.LoginRequest;
+import com.gonzalo.proyectofinall6.dto.LoginResponse;
 import com.gonzalo.proyectofinall6.api.RetrofitClient;
 
 import retrofit2.Call;

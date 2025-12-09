@@ -89,4 +89,16 @@
     <string name="maintext_paso4">Selecciona una cobertura</string>
     <string name="ver_resumen">Ver resumen</string>
 
+    <string name="confirmar_cita">Confirmar cita</string>
+    <string name="horarios_para_el_dia_seleccionado">Horarios para el día seleccionado</string>
+
+    <!-- Turno registrado-->
+    <string name="titulo_reserva_exitosa">¡Turno reservado con éxito!</string>
+    <string name="mensaje_detalles_correo">Hemos enviado los detalles a tu correo electrónico para que los tengas a mano.</string>
+    <string name="boton_ver_turnos">Ver mis turnos</string>
+    <string name="boton_volver_inicio">Volver al inicio</string>
+    <string name="descripcion_reserva_exitosa">Icono de checkmark verde</string>
+    <string name="volver_al_inicio">Volver al inicio</string>
+
+
 </resources>

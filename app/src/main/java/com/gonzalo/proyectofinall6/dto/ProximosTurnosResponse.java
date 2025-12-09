@@ -1,12 +1,11 @@
+package com.gonzalo.proyectofinall6.dto;
 
-package com.gonzalo.proyectofinall6.Responses;
-
-import com.gonzalo.proyectofinall6.Models.Turno;
+import com.gonzalo.proyectofinall6.modelos.Turno;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class HistorialResponse {
+public class ProximosTurnosResponse {
 
     @SerializedName("success")
     private boolean success;

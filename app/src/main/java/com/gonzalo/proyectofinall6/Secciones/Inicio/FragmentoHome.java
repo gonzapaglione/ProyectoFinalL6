@@ -19,7 +19,7 @@ import com.gonzalo.proyectofinall6.Secciones.ReservaTurno.Reservacion;
 import com.gonzalo.proyectofinall6.api.ApiService;
 import com.gonzalo.proyectofinall6.api.RetrofitClient;
 import com.gonzalo.proyectofinall6.modelos.Paciente;
-import com.gonzalo.proyectofinall6.modelos.PacienteResponse;
+import com.gonzalo.proyectofinall6.dto.PacienteResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;

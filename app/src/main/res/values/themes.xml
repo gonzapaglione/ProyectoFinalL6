@@ -6,4 +6,9 @@
     </style>
 
     <style name="Theme.ProyectoFinalL6" parent="Base.Theme.ProyectoFinalL6" />
+
+    <style name="ShapeAppearance.App.CircleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

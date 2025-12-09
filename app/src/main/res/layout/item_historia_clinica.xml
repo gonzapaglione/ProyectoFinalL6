@@ -16,7 +16,7 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/tvDate"
+            android:id="@+id/tvFecha"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             tools:text="28 de Noviembre, 2025 | 05:30 PM"
@@ -25,10 +25,10 @@
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/chipStatus"/>
+            app:layout_constraintEnd_toStartOf="@+id/chipEstado"/>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/chipStatus"
+            android:id="@+id/chipEstado"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:cardCornerRadius="12dp"
@@ -38,7 +38,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/tvStatusText"
+                android:id="@+id/tvEstado"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="12dp"
@@ -50,7 +50,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
-            android:id="@+id/tvDoctor"
+            android:id="@+id/tvOdontologo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -58,17 +58,17 @@
             android:textColor="@color/text_secondary"
             android:textSize="13sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDate" />
+            app:layout_constraintTop_toBottomOf="@id/tvFecha" />
 
         <TextView
-            android:id="@+id/tvCoverage"
+            android:id="@+id/tvCobertura"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Cobertura: Particular"
             android:textColor="@color/text_secondary"
             android:textSize="13sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDoctor" />
+            app:layout_constraintTop_toBottomOf="@id/tvOdontologo" />
 
         <View
             android:id="@+id/divider"
@@ -76,10 +76,10 @@
             android:layout_height="1dp"
             android:layout_marginTop="12dp"
             android:background="#E5E7EB"
-            app:layout_constraintTop_toBottomOf="@id/tvCoverage"/>
+            app:layout_constraintTop_toBottomOf="@id/tvCobertura"/>
 
         <TextView
-            android:id="@+id/tvReason"
+            android:id="@+id/tvMotivo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -89,28 +89,39 @@
             tools:text="Motivo consulta: Dolor dental - de muela" />
 
         <TextView
-            android:id="@+id/tvTreatment"
+            android:id="@+id/tvTratamiento"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textSize="13sp"
             android:textColor="@color/text_secondary"
-            app:layout_constraintTop_toBottomOf="@id/tvReason"
+            app:layout_constraintTop_toBottomOf="@id/tvMotivo"
             tools:text="Tratamiento: Evolución" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAction"
+            android:id="@+id/btnCancelar"
+            style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:textColor="@android:color/white"
-            android:textAllCaps="false"
-            app:cornerRadius="8dp"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/button_danger_red"
+            android:text="Cancelar Turno"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTreatment"
-            tools:text="Ver detalle"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toBottomOf="@id/tvTratamiento" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDetalle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Ver Detalle"
+            android:visibility="gone"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/main_blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTratamiento" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

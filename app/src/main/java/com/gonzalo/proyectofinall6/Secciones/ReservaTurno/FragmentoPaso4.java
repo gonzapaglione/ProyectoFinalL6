@@ -1,66 +1,87 @@
 package com.gonzalo.proyectofinall6.Secciones.ReservaTurno;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.gonzalo.proyectofinall6.R;
+import com.gonzalo.proyectofinall6.databinding.FragmentPaso4Binding;
+import com.gonzalo.proyectofinall6.modelos.ObraSocial;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentoPaso4#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class FragmentoPaso4 extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private FragmentPaso4Binding binding;
+    private ReservarViewModel reservarViewModel;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public FragmentoPaso4() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Paso4.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FragmentoPaso4 newInstance(String param1, String param2) {
-        FragmentoPaso4 fragment = new FragmentoPaso4();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentPaso4Binding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        reservarViewModel = new ViewModelProvider(requireActivity()).get(ReservarViewModel.class);
+
+        setupButtons();
+
+        reservarViewModel.getObrasSociales().observe(getViewLifecycleOwner(), obrasSociales -> {
+            if (obrasSociales != null && !obrasSociales.isEmpty()) {
+                setupAutoComplete(obrasSociales);
+            } else {
+                Toast.makeText(getContext(), "No se pudieron cargar las obras sociales", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        reservarViewModel.fetchObrasSociales();
+    }
+
+    private void setupAutoComplete(List<ObraSocial> obrasSociales) {
+        List<String> nombresObrasSociales = new ArrayList<>();
+        for (ObraSocial obraSocial : obrasSociales) {
+            nombresObrasSociales.add(obraSocial.getNombre());
         }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, nombresObrasSociales);
+        binding.autoCompleteObrasSociales.setAdapter(adapter);
+
+        binding.autoCompleteObrasSociales.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedObraSocialName = (String) parent.getItemAtPosition(position);
+            for (ObraSocial obraSocial : obrasSociales) {
+                if (obraSocial.getNombre().equals(selectedObraSocialName)) {
+                    reservarViewModel.setObraSocialId(obraSocial.getIdObraSocial());
+                    reservarViewModel.setObraSocialNombre(obraSocial.getNombre());
+                    binding.btnNext.setEnabled(true);
+                    break;
+                }
+            }
+        });
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_paso4, container, false);
+    private void setupButtons() {
+        binding.btnNext.setEnabled(false);
+        binding.btnNext.setOnClickListener(v -> {
+            NavHostFragment.findNavController(FragmentoPaso4.this)
+                    .navigate(R.id.action_fragmentoPaso4_to_fragmentoResumenTurno);
+        });
+
+        binding.btnBack.setOnClickListener(v -> {
+            requireActivity().onBackPressed();
+        });
     }
 }

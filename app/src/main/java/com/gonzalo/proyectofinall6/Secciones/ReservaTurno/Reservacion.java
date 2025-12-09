@@ -38,19 +38,19 @@ public class Reservacion extends AppCompatActivity {
         // Listener para actualizar el título y subtítulo personalizados
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             int destinationId = destination.getId();
-            if (destinationId == R.id.paso1Fragment) {
-                toolbarTitle.setText("Paso 1 de 5");
-                toolbarSubtitle.setText("Seleccionar especialidad");
-            } else if (destinationId == R.id.paso2Fragment) {
-                toolbarTitle.setText("Paso 2 de 5");
-                toolbarSubtitle.setText("Seleccionar profesional");
-            } else if (destinationId == R.id.paso3Fragment) {
-                toolbarTitle.setText("Paso 3 de 5");
-                toolbarSubtitle.setText("Seleccionar fecha");
-            } else if (destinationId == R.id.paso4Fragment) {
-                toolbarTitle.setText("Paso 4 de 5");
-                toolbarSubtitle.setText("Seleccionar horario");
-            } else if (destinationId == R.id.resumenTurnoFragment) {
+            if (destinationId == R.id.fragmentoPaso1) {
+                toolbarTitle.setText("Paso 1 de 4");
+                toolbarSubtitle.setText("Selecciona odontologo");
+            } else if (destinationId == R.id.fragmentoPaso2) {
+                toolbarTitle.setText("Paso 2 de 4");
+                toolbarSubtitle.setText("Seleccionar fecha y hora");
+            } else if (destinationId == R.id.fragmentoPaso3) {
+                toolbarTitle.setText("Paso 3 de 4");
+                toolbarSubtitle.setText("Seleccionar motivo");
+            } else if (destinationId == R.id.fragmentoPaso4) {
+                toolbarTitle.setText("Paso 4 de 4");
+                toolbarSubtitle.setText("Seleccionar obra social");
+            } else if (destinationId == R.id.fragmentoResumenTurno) {
                 toolbarTitle.setText("Resumen del turno");
                 toolbarSubtitle.setText("Confirmar datos");
             } else {

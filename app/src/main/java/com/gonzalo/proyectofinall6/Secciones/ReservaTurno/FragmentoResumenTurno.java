@@ -1,66 +1,99 @@
 package com.gonzalo.proyectofinall6.Secciones.ReservaTurno;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.gonzalo.proyectofinall6.R;
+import com.gonzalo.proyectofinall6.databinding.FragmentoResumenTurnoBinding;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentoResumenTurno#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class FragmentoResumenTurno extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private FragmentoResumenTurnoBinding binding;
+    private ReservarViewModel reservarViewModel;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public FragmentoResumenTurno() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ResumenTurno.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FragmentoResumenTurno newInstance(String param1, String param2) {
-        FragmentoResumenTurno fragment = new FragmentoResumenTurno();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentoResumenTurnoBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        reservarViewModel = new ViewModelProvider(requireActivity()).get(ReservarViewModel.class);
+
+        setupButtons();
+        observeViewModel();
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_resumen_turno, container, false);
+    private void observeViewModel() {
+        reservarViewModel.getFecha().observe(getViewLifecycleOwner(), fecha -> {
+            reservarViewModel.getHoraInicio().observe(getViewLifecycleOwner(), hora -> {
+                try {
+                    // Parse the date and time
+                    SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    Date date = inputFormat.parse(fecha);
+
+                    SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE, dd 'de' MMMM", new Locale("es", "ES"));
+                    String formattedDate = dayFormat.format(date);
+
+                    // Format the time
+                    String formattedTime = hora.substring(0, 5) + " AM";
+
+                    binding.tvFechaHora.setText(formattedDate + " - " + formattedTime);
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+
+        reservarViewModel.getOdontologoNombre().observe(getViewLifecycleOwner(), nombre -> {
+            binding.tvProfesional.setText(nombre);
+        });
+
+        reservarViewModel.getMotivoConsultaNombre().observe(getViewLifecycleOwner(), motivo -> {
+            binding.tvMotivo.setText(motivo);
+        });
+
+        reservarViewModel.getObraSocialNombre().observe(getViewLifecycleOwner(), obraSocial -> {
+            binding.tvCobertura.setText(obraSocial);
+        });
+
+        reservarViewModel.getTurnoCreado().observe(getViewLifecycleOwner(), turnoResponse -> {
+            if (turnoResponse != null && turnoResponse.isSuccess()) {
+                Toast.makeText(getContext(), "Turno creado exitosamente", Toast.LENGTH_SHORT).show();
+                // Navigate to a success screen
+                NavHostFragment.findNavController(FragmentoResumenTurno.this).navigate(R.id.action_fragmentoResumenTurno_to_turnoRegistrado);
+            } else {
+                Toast.makeText(getContext(), "Error al crear el turno", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setupButtons() {
+        binding.btnConfirmar.setOnClickListener(v -> {
+            reservarViewModel.crearTurno();
+        });
+
+        binding.btnBack.setOnClickListener(v -> {
+            requireActivity().onBackPressed();
+        });
     }
 }

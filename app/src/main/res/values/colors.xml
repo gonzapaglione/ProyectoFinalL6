@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="gray_bg">#F5F5F5</color>
-    <color name="main_blue">#4F46E5</color>
+    <resources>
+<color name="black">#FF000000</color>
+<color name="white">#FFFFFFFF</color>
+<color name="main_blue">#FF0000FF</color>
+<color name="gray_bg">#F5F5F5</color>
 
-    <color name="purple_primary">#4F46E5</color>
-    <color name="bg_screen">#F9FAFB</color>
-    <color name="text_primary">#111827</color>
-    <color name="text_secondary">#6B7280</color>
+<color name="purple_primary">#4F46E5</color>
+<color name="bg_screen">#F9FAFB</color>
+<color name="text_primary">#111827</color>
+<color name="text_secondary">#6B7280</color>
 
-    <color name="status_programmed_bg">#DBEAFE</color>
-    <color name="status_programmed_text">#1E40AF</color>
-    <color name="status_realized_bg">#D1FAE5</color>
-    <color name="status_realized_text">#065F46</color>
-    <color name="status_cancelled_bg">#FEE2E2</color>
-    <color name="status_cancelled_text">#991B1B</color>
-    <color name="status_absent_bg">#FEF9C3</color>
-    <color name="status_absent_text">#854D0E</color>
+<color name="status_programmed_bg">#DBEAFE</color>
+<color name="status_programmed_text">#1E40AF</color>
+<color name="status_realized_bg">#D1FAE5</color>
+<color name="status_realized_text">#065F46</color>
+<color name="status_cancelled_bg">#FEE2E2</color>
+<color name="status_cancelled_text">#991B1B</color>
+<color name="status_absent_bg">#FEF9C3</color>
+<color name="status_absent_text">#854D0E</color>
 
-    <color name="button_danger_red">#991B1B</color>
-</resources>
+<color name="button_danger_red">#991B1B</color>
+<color name="success_green">#4CAF50</color>
+
+    </resources>

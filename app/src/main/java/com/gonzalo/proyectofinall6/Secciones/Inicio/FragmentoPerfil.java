@@ -16,25 +16,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
 import com.gonzalo.proyectofinall6.Secciones.MainActivity;
 import com.gonzalo.proyectofinall6.R;
-import com.gonzalo.proyectofinall6.api.ApiService;
-import com.gonzalo.proyectofinall6.api.RetrofitClient;
 import com.gonzalo.proyectofinall6.modelos.Paciente;
-import com.gonzalo.proyectofinall6.modelos.PacienteResponse;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class FragmentoPerfil extends Fragment {
 
     private EditText etNombre, etApellido, etDni, etTelefono, etDireccion, etEmail;
     private TextView tvUsername, tvEmailHeader, tvChangePassword;
     private MaterialButton btnEditarInformacion, btnLogout;
-    private ApiService apiService;
+    private PerfilViewModel perfilViewModel;
     private boolean isEditing = false;
 
     public FragmentoPerfil() {
@@ -44,7 +38,7 @@ public class FragmentoPerfil extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        apiService = RetrofitClient.getApiService();
+        perfilViewModel = new ViewModelProvider(this).get(PerfilViewModel.class);
     }
 
     @Override
@@ -57,7 +51,9 @@ public class FragmentoPerfil extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         bindViews(view);
-        loadPatientData();
+        observeViewModel();
+
+        perfilViewModel.loadPacienteData();
 
         btnEditarInformacion.setOnClickListener(v -> toggleEditState());
         btnLogout.setOnClickListener(v -> logout());
@@ -78,28 +74,11 @@ public class FragmentoPerfil extends Fragment {
         tvChangePassword = view.findViewById(R.id.tvChangePassword);
     }
 
-    private void loadPatientData() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        int patientIdInt = sharedPreferences.getInt("user_id", -1);
-
-        if (patientIdInt != -1) {
-            String patientId = String.valueOf(patientIdInt);
-            apiService.getPaciente(patientId).enqueue(new Callback<PacienteResponse>() {
-                @Override
-                public void onResponse(Call<PacienteResponse> call, Response<PacienteResponse> response) {
-                    if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-                        populateUI(response.body().getData());
-                    } else {
-                        Toast.makeText(getContext(), "Error al cargar datos", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<PacienteResponse> call, Throwable t) {
-                    Toast.makeText(getContext(), "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+    private void observeViewModel() {
+        perfilViewModel.getPaciente().observe(getViewLifecycleOwner(), this::populateUI);
+        perfilViewModel.getError().observe(getViewLifecycleOwner(), error -> {
+            Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void populateUI(Paciente paciente) {
