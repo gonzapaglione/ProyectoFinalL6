@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/reserva_graph"
+    android:id="@+id/reserva_navigation"
     app:startDestination="@id/fragmentoPaso1">
 
     <fragment
@@ -15,7 +15,7 @@
             app:destination="@id/fragmentoPaso2" />
     </fragment>
 
-    <fragment
+     <fragment
         android:id="@+id/fragmentoPaso2"
         android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.FragmentoPaso2"
         android:label="fragment_paso2"

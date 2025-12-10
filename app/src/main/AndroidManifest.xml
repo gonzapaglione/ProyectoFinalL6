@@ -16,15 +16,8 @@
         android:theme="@style/Theme.ProyectoFinalL6"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Secciones.ReservaTurno.FragmentoPaso3"
-            android:exported="false" />
-        <activity
             android:name=".Secciones.ReservaTurno.Reservacion"
             android:exported="false" />
-        <activity
-            android:name=".Secciones.ReservaTurno.Reserva1"
-            android:exported="false"
-            android:theme="@style/Theme.ProyectoFinalL6" />
         <activity
             android:name=".Secciones.Inicio.HomeActivity"
             android:exported="false" />
