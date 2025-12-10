@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gonzalo.proyectofinall6.R;
+import com.gonzalo.proyectofinall6.Secciones.Inicio.HomeActivity;
 import com.gonzalo.proyectofinall6.Secciones.MainActivity;
 import com.google.android.material.button.MaterialButton;
 
@@ -34,7 +35,7 @@ public class TurnoRegistrado extends Fragment {
 
         MaterialButton btnVolverInicio = view.findViewById(R.id.btnVolverInicio);
         btnVolverInicio.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), MainActivity.class);
+            Intent intent = new Intent(getActivity(), HomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             getActivity().finish();
