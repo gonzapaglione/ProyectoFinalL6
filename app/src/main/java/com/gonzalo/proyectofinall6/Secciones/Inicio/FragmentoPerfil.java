@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,13 +17,29 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.textfield.TextInputLayout;
 import com.gonzalo.proyectofinall6.Secciones.MainActivity;
 import com.gonzalo.proyectofinall6.R;
+import com.gonzalo.proyectofinall6.api.ApiService;
+import com.gonzalo.proyectofinall6.api.RetrofitClient;
+import com.gonzalo.proyectofinall6.dto.EditarPacienteRequest;
+import com.gonzalo.proyectofinall6.dto.ObrasSocialesResponse;
+import com.gonzalo.proyectofinall6.modelos.ObraSocial;
 import com.gonzalo.proyectofinall6.modelos.Paciente;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FragmentoPerfil extends Fragment {
 
@@ -30,6 +48,13 @@ public class FragmentoPerfil extends Fragment {
     private MaterialButton btnEditarInformacion, btnLogout;
     private PerfilViewModel perfilViewModel;
     private boolean isEditing = false;
+
+    private CardView cardObrasSociales;
+    private AutoCompleteTextView actvCobertura;
+    private ChipGroup chipGroupCoberturas;
+    private TextInputLayout tilCobertura;
+    private List<ObraSocial> todasLasObrasSociales;
+    private final List<ObraSocial> obrasSocialesSeleccionadas = new ArrayList<>();
 
     public FragmentoPerfil() {
         // Required empty public constructor
@@ -54,10 +79,37 @@ public class FragmentoPerfil extends Fragment {
         observeViewModel();
 
         perfilViewModel.loadPacienteData();
+        loadObrasSociales();
 
         btnEditarInformacion.setOnClickListener(v -> toggleEditState());
         btnLogout.setOnClickListener(v -> logout());
+        tvChangePassword.setOnClickListener(v -> showChangePasswordDialog());
+    }
 
+    private void showChangePasswordDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_change_password, null);
+        builder.setView(dialogView)
+                .setTitle("Cambiar Contraseña")
+                .setPositiveButton("Guardar", (dialog, id) -> {
+                    EditText etPasswordActual = dialogView.findViewById(R.id.etPasswordActual);
+                    EditText etPasswordNueva = dialogView.findViewById(R.id.etPasswordNueva);
+                    EditText etRepetirPasswordNueva = dialogView.findViewById(R.id.etRepetirPasswordNueva);
+
+                    String passwordActual = etPasswordActual.getText().toString();
+                    String passwordNueva = etPasswordNueva.getText().toString();
+                    String repetirPasswordNueva = etRepetirPasswordNueva.getText().toString();
+
+                    if (passwordNueva.equals(repetirPasswordNueva)) {
+                        perfilViewModel.cambiarPassword(passwordActual, passwordNueva);
+                    } else {
+                        Toast.makeText(getContext(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancelar", (dialog, id) -> dialog.dismiss());
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void bindViews(View view) {
@@ -72,12 +124,19 @@ public class FragmentoPerfil extends Fragment {
         btnEditarInformacion = view.findViewById(R.id.btnEditarInformacion);
         btnLogout = view.findViewById(R.id.btnLogout);
         tvChangePassword = view.findViewById(R.id.tvChangePassword);
+        cardObrasSociales = view.findViewById(R.id.cardObrasSociales);
+        actvCobertura = view.findViewById(R.id.actvCobertura);
+        chipGroupCoberturas = view.findViewById(R.id.chipGroupCoberturas);
+        tilCobertura = view.findViewById(R.id.tilCobertura);
     }
 
     private void observeViewModel() {
         perfilViewModel.getPaciente().observe(getViewLifecycleOwner(), this::populateUI);
         perfilViewModel.getError().observe(getViewLifecycleOwner(), error -> {
             Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+        });
+        perfilViewModel.getSuccess().observe(getViewLifecycleOwner(), success -> {
+            Toast.makeText(getContext(), success, Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -92,6 +151,11 @@ public class FragmentoPerfil extends Fragment {
         if (tvUsername != null) tvUsername.setText(paciente.getNombre() + " " + paciente.getApellido());
         if (tvEmailHeader != null) tvEmailHeader.setText(paciente.getEmail());
 
+        if (paciente.getObrasSociales() != null) {
+            obrasSocialesSeleccionadas.clear();
+            obrasSocialesSeleccionadas.addAll(paciente.getObrasSociales());
+            actualizarChips();
+        }
     }
 
     private void toggleEditState() {
@@ -100,13 +164,28 @@ public class FragmentoPerfil extends Fragment {
 
         if (isEditing) {
             btnEditarInformacion.setText("Guardar Cambios");
-            //btnEditarInformacion.setIconResource(R.drawable.ic_save); // Add ic_save to drawables
+            tilCobertura.setVisibility(View.VISIBLE);
+            actualizarChips(); // Para mostrar el icono de cerrar
         } else {
             btnEditarInformacion.setText("Editar Información");
             btnEditarInformacion.setIconResource(android.R.drawable.ic_menu_edit);
-            // TODO: Add logic to save data to the backend
-            Toast.makeText(getContext(), "Cambios guardados (simulado)", Toast.LENGTH_SHORT).show();
+            tilCobertura.setVisibility(View.GONE);
+            savePatientData();
+            actualizarChips(); // Para ocultar el icono de cerrar
         }
+    }
+
+    private void savePatientData() {
+        String nombre = etNombre.getText().toString();
+        String apellido = etApellido.getText().toString();
+        String dni = etDni.getText().toString();
+        String telefono = etTelefono.getText().toString();
+        String direccion = etDireccion.getText().toString();
+        String email = etEmail.getText().toString();
+
+        EditarPacienteRequest request = new EditarPacienteRequest(dni, nombre, apellido, telefono, direccion, email, "paciente", obrasSocialesSeleccionadas);
+
+        perfilViewModel.editarPaciente(request);
     }
 
     private void enableEdit(boolean enable) {
@@ -115,7 +194,58 @@ public class FragmentoPerfil extends Fragment {
         etDni.setEnabled(enable);
         etTelefono.setEnabled(enable);
         etDireccion.setEnabled(enable);
-        // etEmail.setEnabled(enable); // Usually, email is not editable
+    }
+
+    private void loadObrasSociales() {
+        ApiService apiService = RetrofitClient.getApiService();
+        apiService.getObrasSociales().enqueue(new Callback<ObrasSocialesResponse>() {
+            @Override
+            public void onResponse(Call<ObrasSocialesResponse> call, Response<ObrasSocialesResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    todasLasObrasSociales = response.body().getData();
+                    ArrayAdapter<ObraSocial> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, todasLasObrasSociales);
+                    actvCobertura.setAdapter(adapter);
+                    actvCobertura.setOnItemClickListener((parent, view, position, id) -> {
+                        ObraSocial seleccionada = (ObraSocial) parent.getItemAtPosition(position);
+                        if (!obrasSocialesSeleccionadas.contains(seleccionada)) {
+                            obrasSocialesSeleccionadas.add(seleccionada);
+                            actualizarChips();
+                        }
+                        actvCobertura.setText("");
+                    });
+                } else {
+                    Toast.makeText(getContext(), "Error al cargar las obras sociales", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ObrasSocialesResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void actualizarChips() {
+        chipGroupCoberturas.removeAllViews();
+        for (ObraSocial obraSocial : obrasSocialesSeleccionadas) {
+            agregarChip(obraSocial);
+        }
+    }
+
+    private void agregarChip(ObraSocial obraSocial) {
+        Chip chip = new Chip(getContext());
+        chip.setText(obraSocial.getNombre());
+
+        boolean esParticular = "PARTICULAR".equalsIgnoreCase(obraSocial.getNombre());
+        chip.setCloseIconVisible(isEditing && !esParticular);
+
+        if (isEditing && !esParticular) {
+            chip.setOnCloseIconClickListener(v -> {
+                obrasSocialesSeleccionadas.remove(obraSocial);
+                actualizarChips();
+            });
+        }
+        chipGroupCoberturas.addView(chip);
     }
 
     private void logout() {
@@ -125,13 +255,11 @@ public class FragmentoPerfil extends Fragment {
                 .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Limpiar SharedPreferences
                         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.clear();
                         editor.apply();
 
-                        // Redirigir al usuario a la pantalla de login
                         Intent intent = new Intent(getActivity(), MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
