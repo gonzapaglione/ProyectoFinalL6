@@ -7,25 +7,25 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.gonzalo.proyectofinall6.Secciones.Inicio.FragmentoHome"
+        android:name="com.gonzalo.proyectofinall6.ui.Inicio.FragmentoHome"
         android:label="Inicio"
         tools:layout="@layout/fragmento_home" />
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.gonzalo.proyectofinall6.Secciones.Inicio.FragmentoPerfil"
+        android:name="com.gonzalo.proyectofinall6.ui.Inicio.FragmentoPerfil"
         android:label="Perfil"
         tools:layout="@layout/fragmento_perfil" />
 
     <fragment
         android:id="@+id/navigation_turns"
-        android:name="com.gonzalo.proyectofinall6.Secciones.Inicio.FragmentoTurnos"
+        android:name="com.gonzalo.proyectofinall6.ui.Inicio.FragmentoTurnos"
         android:label="Turnos"
         tools:layout="@layout/fragmento_turnos" />
 
     <fragment
         android:id="@+id/navigation_about"
-        android:name="com.gonzalo.proyectofinall6.Secciones.Inicio.FragmentoAboutUs"
+        android:name="com.gonzalo.proyectofinall6.ui.Inicio.FragmentoAboutUs"
         android:label="About Us"
         tools:layout="@layout/fragmento_about_us" />
 

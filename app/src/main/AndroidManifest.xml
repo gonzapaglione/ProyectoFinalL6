@@ -16,13 +16,13 @@
         android:theme="@style/Theme.ProyectoFinalL6"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Secciones.ReservaTurno.Reservacion"
+            android:name=".ui.ReservaTurno.Reservacion"
             android:exported="false" />
         <activity
-            android:name=".Secciones.Inicio.HomeActivity"
+            android:name=".ui.Inicio.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".Secciones.MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

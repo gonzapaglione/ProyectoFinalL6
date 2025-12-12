@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/fragmentoLogin"
-        android:name="com.gonzalo.proyectofinall6.Secciones.LoginRegistro.FragmentoLogin"
+        android:name="com.gonzalo.proyectofinall6.ui.LoginRegistro.FragmentoLogin"
         android:label="Login"
         tools:layout="@layout/fragmento_login">
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/fragmentoRegistroPt1"
-        android:name="com.gonzalo.proyectofinall6.Secciones.LoginRegistro.FragmentoRegistroPt1"
+        android:name="com.gonzalo.proyectofinall6.ui.LoginRegistro.FragmentoRegistroPt1"
         android:label="Registro - Parte 1"
         tools:layout="@layout/fragmento_registro_pt1">
         <action
@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/fragmentoRegistroPt2"
-        android:name="com.gonzalo.proyectofinall6.Secciones.LoginRegistro.FragmentoRegistroPt2"
+        android:name="com.gonzalo.proyectofinall6.ui.LoginRegistro.FragmentoRegistroPt2"
         android:label="Registro - Parte 2"
         tools:layout="@layout/fragmento_registro_pt2">
         <action

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/fragmentoPaso1"
-        android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.FragmentoPaso1"
+        android:name="com.gonzalo.proyectofinall6.ui.ReservaTurno.FragmentoPaso1"
         android:label="fragment_paso1"
         tools:layout="@layout/fragment_paso1" >
         <action
@@ -17,7 +17,7 @@
 
      <fragment
         android:id="@+id/fragmentoPaso2"
-        android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.FragmentoPaso2"
+        android:name="com.gonzalo.proyectofinall6.ui.ReservaTurno.FragmentoPaso2"
         android:label="fragment_paso2"
         tools:layout="@layout/fragment_paso2" >
         <action
@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/fragmentoPaso3"
-        android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.FragmentoPaso3"
+        android:name="com.gonzalo.proyectofinall6.ui.ReservaTurno.FragmentoPaso3"
         android:label="fragment_paso3"
         tools:layout="@layout/fragment_paso3" >
         <action
@@ -37,7 +37,7 @@
 
     <fragment
         android:id="@+id/fragmentoPaso4"
-        android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.FragmentoPaso4"
+        android:name="com.gonzalo.proyectofinall6.ui.ReservaTurno.FragmentoPaso4"
         android:label="fragment_paso4"
         tools:layout="@layout/fragment_paso4" >
         <action
@@ -47,7 +47,7 @@
 
     <fragment
         android:id="@+id/fragmentoResumenTurno"
-        android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.FragmentoResumenTurno"
+        android:name="com.gonzalo.proyectofinall6.ui.ReservaTurno.FragmentoResumenTurno"
         android:label="fragment_resumen_turno"
         tools:layout="@layout/fragmento_resumen_turno" >
         <action
@@ -57,7 +57,7 @@
 
     <fragment
         android:id="@+id/turnoRegistrado"
-        android:name="com.gonzalo.proyectofinall6.Secciones.ReservaTurno.TurnoRegistrado"
+        android:name="com.gonzalo.proyectofinall6.ui.ReservaTurno.TurnoRegistrado"
         android:label="fragment_turno_registrado"
         tools:layout="@layout/fragment_turno_registrado" />
 
