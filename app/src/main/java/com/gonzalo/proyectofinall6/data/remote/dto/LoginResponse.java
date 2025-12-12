@@ -28,6 +28,9 @@ public class LoginResponse {
         @SerializedName("userId")
         private int userId;
 
+        @SerializedName("idPaciente")
+        private Integer idPaciente;
+
         @SerializedName("email")
         private String email;
 
@@ -40,9 +43,12 @@ public class LoginResponse {
         @SerializedName("apellido")
         private String apellido;
 
-
         public int getUserId() {
             return userId;
+        }
+
+        public Integer getIdPaciente() {
+            return idPaciente;
         }
 
         public String getEmail() {

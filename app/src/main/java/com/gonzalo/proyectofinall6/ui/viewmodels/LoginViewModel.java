@@ -49,7 +49,12 @@ public class LoginViewModel extends AndroidViewModel {
         loginResult.addSource(loginSource, result -> {
             if (result != null && result.isSuccess() && result.getData() != null
                     && result.getData().getData() != null) {
-                sessionRepository.saveSession(result.getData().getData().getUserId(), rememberMe);
+                Integer idPaciente = result.getData().getData().getIdPaciente();
+                int sessionId = (idPaciente != null && idPaciente > 0)
+                        ? idPaciente
+                        : result.getData().getData().getUserId();
+
+                sessionRepository.saveSession(sessionId, true);
             }
             loginResult.setValue(result);
 

@@ -50,6 +50,14 @@
     <string name="title_hc">Historia clinica</string>
     <string name="title_about">Sobre nosotros</string>
 
+    <!-- Sobre nosotros -->
+    <string name="about_location_title">Nuestra ubicación</string>
+    <string name="about_location_placeholder">Google maps</string>
+    <string name="about_professionals">Nuestro equipo</string>
+    <string name="about_professionals_desc">Conoce a nuestro equipo.
+        Contamos con un equipo de profesionales comprometidos
+        con tu salud bucal. </string>
+
     <!-- Perfil -->
     <string name="profile_avatar_description">Avatar</string>
     <string name="profile_username">Nombre de usuario</string>
@@ -94,11 +102,15 @@
 
     <!-- Turno registrado-->
     <string name="titulo_reserva_exitosa">¡Turno reservado con éxito!</string>
-    <string name="mensaje_detalles_correo">Hemos enviado los detalles a tu correo electrónico para que los tengas a mano.</string>
+    <string name="mensaje_detalles_correo">Hemos enviado los detalles a tu correo electrónico para
+        que los tengas a mano.</string>
     <string name="boton_ver_turnos">Ver mis turnos</string>
     <string name="boton_volver_inicio">Volver al inicio</string>
     <string name="descripcion_reserva_exitosa">Icono de checkmark verde</string>
     <string name="volver_al_inicio">Volver al inicio</string>
+    <string name="historia_clinica">Historia Clínica</string>
+    <string name="no_hay_turnos_programados">No hay turnos programados</string>
+    <string name="proximos_turnos">Próximos Turnos</string>
 
 
 </resources>
