@@ -1,35 +1,29 @@
 package com.gonzalo.proyectofinall6.ui.viewmodels;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
-import com.gonzalo.proyectofinall6.data.remote.api.ApiService;
-import com.gonzalo.proyectofinall6.data.remote.api.RetrofitClient;
 import com.gonzalo.proyectofinall6.data.remote.dto.EditarPacienteRequest;
-import com.gonzalo.proyectofinall6.data.remote.dto.PacienteResponse;
-import com.gonzalo.proyectofinall6.data.remote.dto.PasswordRequest;
+import com.gonzalo.proyectofinall6.data.repositorios.PacienteRepository;
+import com.gonzalo.proyectofinall6.dominio.irepositorios.IPacienteRepository;
 import com.gonzalo.proyectofinall6.dominio.modelos.Paciente;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import com.gonzalo.proyectofinall6.dominio.modelos.RepositoryResult;
 
 public class PerfilViewModel extends AndroidViewModel {
 
+    private final IPacienteRepository repository;
     private final MutableLiveData<Paciente> paciente = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
     private final MutableLiveData<String> success = new MutableLiveData<>();
-    private SharedPreferences sharedPreferences;
 
     public PerfilViewModel(@NonNull Application application) {
         super(application);
-        sharedPreferences = application.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        this.repository = new PacienteRepository(application.getApplicationContext());
     }
 
     public LiveData<Paciente> getPaciente() {
@@ -45,79 +39,51 @@ public class PerfilViewModel extends AndroidViewModel {
     }
 
     public void loadPacienteData() {
-        new Thread(() -> {
-            int patientIdInt = sharedPreferences.getInt("user_id", -1);
-            if (patientIdInt != -1) {
-                String patientId = String.valueOf(patientIdInt);
-                ApiService apiService = RetrofitClient.getApiService();
-                apiService.getPaciente(patientId).enqueue(new Callback<PacienteResponse>() {
-                    @Override
-                    public void onResponse(Call<PacienteResponse> call, Response<PacienteResponse> response) {
-                        if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                            paciente.postValue(response.body().getData());
-                        } else {
-                            error.postValue("Error al cargar datos del paciente");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<PacienteResponse> call, Throwable t) {
-                        error.postValue("Error de red: " + t.getMessage());
-                    }
-                });
+        LiveData<RepositoryResult<Paciente>> source = repository.getPacienteActual();
+        Observer<RepositoryResult<Paciente>> observer = new Observer<RepositoryResult<Paciente>>() {
+            @Override
+            public void onChanged(RepositoryResult<Paciente> result) {
+                if (result != null && result.isSuccess()) {
+                    paciente.setValue(result.getData());
+                } else {
+                    error.setValue(result == null ? "Error desconocido" : result.getError());
+                }
+                source.removeObserver(this);
             }
-        }).start();
+        };
+        source.observeForever(observer);
     }
 
     public void editarPaciente(EditarPacienteRequest request) {
-        new Thread(() -> {
-            int patientIdInt = sharedPreferences.getInt("user_id", -1);
-            if (patientIdInt != -1) {
-                String patientId = String.valueOf(patientIdInt);
-                ApiService apiService = RetrofitClient.getApiService();
-                apiService.editarPaciente(patientId, request).enqueue(new Callback<PacienteResponse>() {
-                    @Override
-                    public void onResponse(Call<PacienteResponse> call, Response<PacienteResponse> response) {
-                        if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                            paciente.postValue(response.body().getData());
-                            success.postValue("Datos actualizados correctamente");
-                        } else {
-                            error.postValue("Error al actualizar los datos");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<PacienteResponse> call, Throwable t) {
-                        error.postValue("Error de red: " + t.getMessage());
-                    }
-                });
+        LiveData<RepositoryResult<Paciente>> source = repository.editarPaciente(request);
+        Observer<RepositoryResult<Paciente>> observer = new Observer<RepositoryResult<Paciente>>() {
+            @Override
+            public void onChanged(RepositoryResult<Paciente> result) {
+                if (result != null && result.isSuccess()) {
+                    paciente.setValue(result.getData());
+                    success.setValue("Datos actualizados correctamente");
+                } else {
+                    error.setValue(result == null ? "Error desconocido" : result.getError());
+                }
+                source.removeObserver(this);
             }
-        }).start();
+        };
+        source.observeForever(observer);
     }
 
     public void cambiarPassword(String passwordActual, String passwordNueva) {
-        new Thread(() -> {
-            int patientIdInt = sharedPreferences.getInt("user_id", -1);
-            if (patientIdInt != -1) {
-                String patientId = String.valueOf(patientIdInt);
-                ApiService apiService = RetrofitClient.getApiService();
-                PasswordRequest request = new PasswordRequest(passwordActual, passwordNueva);
-                apiService.cambiarPassword(patientId, request).enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (response.isSuccessful()) {
-                            success.postValue("Contraseña actualizada correctamente");
-                        } else {
-                            error.postValue("Error al cambiar la contraseña");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        error.postValue("Error de red: " + t.getMessage());
-                    }
-                });
+        LiveData<RepositoryResult<Void>> source = repository.cambiarPassword(passwordActual, passwordNueva);
+        Observer<RepositoryResult<Void>> observer = new Observer<RepositoryResult<Void>>() {
+            @Override
+            public void onChanged(RepositoryResult<Void> result) {
+                if (result != null && result.isSuccess()) {
+                    success.setValue("Contraseña actualizada correctamente");
+                } else {
+                    error.setValue(result == null ? "Error desconocido" : result.getError());
+                }
+                source.removeObserver(this);
             }
-        }).start();
+        };
+        source.observeForever(observer);
     }
 }
