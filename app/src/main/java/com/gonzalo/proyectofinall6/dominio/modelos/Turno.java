@@ -52,6 +52,16 @@ public class Turno implements Serializable {
     @SerializedName("notasCancelacion")
     private String notasCancelacion;
 
+    // Valoración (si existe)
+    @SerializedName("idValoracion")
+    private Integer idValoracion;
+
+    @SerializedName("estrellasValoracion")
+    private Integer estrellasValoracion;
+
+    @SerializedName("comentarioValoracion")
+    private String comentarioValoracion;
+
     // Getters and Setters
 
     public Long getIdTurno() {
@@ -172,5 +182,29 @@ public class Turno implements Serializable {
 
     public void setNotasCancelacion(String notasCancelacion) {
         this.notasCancelacion = notasCancelacion;
+    }
+
+    public Integer getIdValoracion() {
+        return idValoracion;
+    }
+
+    public void setIdValoracion(Integer idValoracion) {
+        this.idValoracion = idValoracion;
+    }
+
+    public Integer getEstrellasValoracion() {
+        return estrellasValoracion;
+    }
+
+    public void setEstrellasValoracion(Integer estrellasValoracion) {
+        this.estrellasValoracion = estrellasValoracion;
+    }
+
+    public String getComentarioValoracion() {
+        return comentarioValoracion;
+    }
+
+    public void setComentarioValoracion(String comentarioValoracion) {
+        this.comentarioValoracion = comentarioValoracion;
     }
 }

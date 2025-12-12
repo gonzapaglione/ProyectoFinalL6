@@ -52,6 +52,10 @@ public class FragmentoAboutUs extends Fragment {
             adapter.submitList(odontologos);
         });
 
+        aboutUsViewModel.getPromedios().observe(getViewLifecycleOwner(), promedios -> {
+            adapter.submitPromedios(promedios);
+        });
+
         aboutUsViewModel.getError().observe(getViewLifecycleOwner(), err -> {
             if (err != null) {
                 Toast.makeText(getContext(), err, Toast.LENGTH_SHORT).show();

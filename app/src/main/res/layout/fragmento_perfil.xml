@@ -53,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:text="@string/profile_edit_info"
-                android:backgroundTint="#4F46E5"
+                android:backgroundTint="@color/main_blue"
                 android:textAllCaps="false"
                 android:textSize="16sp"
                 android:textStyle="bold"

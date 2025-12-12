@@ -11,12 +11,15 @@ import com.gonzalo.proyectofinall6.data.remote.dto.LoginResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.MotivosConsultaResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.ObrasSocialesResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.PacienteResponse;
+import com.gonzalo.proyectofinall6.data.remote.dto.PromedioValoracionResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.PasswordRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.ProximosTurnosResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.RegistroRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.RegistroResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.TurnoRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.TurnoResponse;
+import com.gonzalo.proyectofinall6.data.remote.dto.CrearValoracionRequest;
+import com.gonzalo.proyectofinall6.data.remote.dto.ValoracionResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -28,51 +31,56 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
-    @POST("api/auth/login")
-    Call<LoginResponse> login(@Body LoginRequest loginRequest);
+        @POST("api/auth/login")
+        Call<LoginResponse> login(@Body LoginRequest loginRequest);
 
-    @GET("api/paciente/{id}")
-    Call<PacienteResponse> getPaciente(@Path("id") String id);
+        @GET("api/paciente/{id}")
+        Call<PacienteResponse> getPaciente(@Path("id") String id);
 
-    @PUT("api/paciente/{id}")
-    Call<PacienteResponse> editarPaciente(@Path("id") String id, @Body EditarPacienteRequest request);
+        @PUT("api/paciente/{id}")
+        Call<PacienteResponse> editarPaciente(@Path("id") String id, @Body EditarPacienteRequest request);
 
-    @PUT("api/paciente/{id}/password")
-    Call<Void> cambiarPassword(@Path("id") String id, @Body PasswordRequest request);
+        @PUT("api/paciente/{id}/password")
+        Call<Void> cambiarPassword(@Path("id") String id, @Body PasswordRequest request);
 
-    @GET("api/catalogos/obras-sociales")
-    Call<ObrasSocialesResponse> getObrasSociales();
+        @GET("api/catalogos/obras-sociales")
+        Call<ObrasSocialesResponse> getObrasSociales();
 
-    @POST("api/auth/registro/paciente")
-    Call<RegistroResponse> registrarPaciente(@Body RegistroRequest registroRequest);
+        @POST("api/auth/registro/paciente")
+        Call<RegistroResponse> registrarPaciente(@Body RegistroRequest registroRequest);
 
+        @GET("api/turnos/paciente/{id}/historial")
+        Call<HistorialResponse> getHistorial(@Path("id") long pacienteId);
 
-    @GET("api/turnos/paciente/{id}/historial")
-    Call<HistorialResponse> getHistorial(@Path("id") long pacienteId);
+        @GET("api/turnos/paciente/{id}/proximos")
+        Call<ProximosTurnosResponse> getProximos(@Path("id") long pacienteId);
 
-    @GET("api/turnos/paciente/{id}/proximos")
-    Call<ProximosTurnosResponse> getProximos(@Path("id") long pacienteId);
+        @POST("api/turnos/cancelar")
+        Call<Void> cancelarTurno(@Body CancelarTurnoRequest request);
 
-    @POST("api/turnos/cancelar")
-    Call<Void> cancelarTurno(@Body CancelarTurnoRequest request);
+        // Reserva de turnos
 
-    // Reserva de turnos
+        @GET("api/odontologos")
+        Call<GetOdontologosResponse> getOdontologos();
 
-    @GET("api/odontologos")
-    Call<GetOdontologosResponse> getOdontologos();
+        @GET("api/turnos/horarios-disponibles")
+        Call<HorariosDisponiblesResponse> getHorariosDisponibles(
+                        @Query("idOdontologo") Integer idOdontologo,
+                        @Query("fecha") String fecha);
 
-    @GET("api/turnos/horarios-disponibles")
-    Call<HorariosDisponiblesResponse> getHorariosDisponibles(
-            @Query("idOdontologo") Integer idOdontologo,
-            @Query("fecha") String fecha
-    );
+        @GET("api/catalogos/motivos-consulta")
+        Call<MotivosConsultaResponse> getMotivosConsulta();
 
-    @GET("api/catalogos/motivos-consulta")
-    Call<MotivosConsultaResponse> getMotivosConsulta();
+        @POST("api/turnos")
+        Call<ApiResponse<TurnoResponse>> crearTurno(
+                        @Body TurnoRequest request);
 
-    @POST("api/turnos")
-    Call<ApiResponse<TurnoResponse>> crearTurno(
-            @Body TurnoRequest request
-    );
+        // Valoraciones
+
+        @POST("api/valoraciones")
+        Call<ApiResponse<ValoracionResponse>> crearValoracion(@Body CrearValoracionRequest request);
+
+        @GET("api/valoraciones/odontologo/{idOdontologo}/promedio")
+        Call<ApiResponse<PromedioValoracionResponse>> getPromedioValoracion(@Path("idOdontologo") int idOdontologo);
 
 }

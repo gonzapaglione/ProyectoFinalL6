@@ -18,11 +18,11 @@
             android:id="@+id/ivAvatar"
             android:layout_width="56dp"
             android:layout_height="56dp"
+            android:layout_marginTop="4dp"
             android:contentDescription="@null"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_user_default"
             app:shapeAppearanceOverlay="@style/ShapeAppearance.App.CircleImageView"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,6 +40,34 @@
             app:layout_constraintTop_toTopOf="@id/ivAvatar"
             tools:text="Ana Gomez" />
 
+        <TextView
+            android:id="@+id/tvPromedioLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textColor="@color/text_secondary"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/ivAvatar"
+            app:layout_constraintTop_toBottomOf="@id/tvNombre"
+            tools:text="Promedio" />
+
+        <RatingBar
+            android:id="@+id/rbPromedio"
+            style="?attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:stepSize="0.1"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/tvPromedioLabel"
+            app:layout_constraintTop_toTopOf="@id/tvPromedioLabel"
+            tools:rating="4.6" />
+
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroupEspecialidades"
             android:layout_width="0dp"
@@ -50,7 +78,7 @@
             app:chipSpacingVertical="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivAvatar"
-            app:layout_constraintTop_toBottomOf="@id/tvNombre"
+            app:layout_constraintTop_toBottomOf="@id/tvPromedioLabel"
             app:singleLine="false"
             tools:ignore="MissingConstraints">
 

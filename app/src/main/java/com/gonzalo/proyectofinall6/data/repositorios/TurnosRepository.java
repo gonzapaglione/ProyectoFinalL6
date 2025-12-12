@@ -9,6 +9,7 @@ import com.gonzalo.proyectofinall6.data.remote.api.ApiService;
 import com.gonzalo.proyectofinall6.data.remote.api.RetrofitClient;
 import com.gonzalo.proyectofinall6.data.remote.dto.ApiResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.CancelarTurnoRequest;
+import com.gonzalo.proyectofinall6.data.remote.dto.CrearValoracionRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.GetOdontologosResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.HistorialResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.HorarioDisponible;
@@ -17,9 +18,11 @@ import com.gonzalo.proyectofinall6.data.remote.dto.MotivoConsulta;
 import com.gonzalo.proyectofinall6.data.remote.dto.MotivosConsultaResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.OdontologoResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.PacienteResponse;
+import com.gonzalo.proyectofinall6.data.remote.dto.PromedioValoracionResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.ProximosTurnosResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.TurnoRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.TurnoResponse;
+import com.gonzalo.proyectofinall6.data.remote.dto.ValoracionResponse;
 import com.gonzalo.proyectofinall6.dominio.irepositorios.ISessionRepository;
 import com.gonzalo.proyectofinall6.dominio.irepositorios.ITurnosRepository;
 import com.gonzalo.proyectofinall6.dominio.modelos.RepositoryResult;
@@ -301,6 +304,64 @@ public class TurnosRepository implements ITurnosRepository {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 liveData.postValue(RepositoryResult.error("Error de red al cancelar el turno"));
+            }
+        });
+
+        return liveData;
+    }
+
+    @Override
+    public LiveData<RepositoryResult<Void>> crearValoracion(int turnoId, int estrellas, String comentario) {
+        MutableLiveData<RepositoryResult<Void>> liveData = new MutableLiveData<>();
+
+        int userId = getUserId();
+        if (userId == -1) {
+            liveData.setValue(RepositoryResult.error("Error: No se pudo obtener el ID de usuario."));
+            return liveData;
+        }
+
+        CrearValoracionRequest request = new CrearValoracionRequest(turnoId, userId, estrellas, comentario);
+        apiService.crearValoracion(request).enqueue(new Callback<ApiResponse<ValoracionResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<ValoracionResponse>> call,
+                    Response<ApiResponse<ValoracionResponse>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    liveData.postValue(RepositoryResult.success(null));
+                } else {
+                    String msg = (response.body() != null && response.body().getMessage() != null)
+                            ? response.body().getMessage()
+                            : "No se pudo guardar la valoración";
+                    liveData.postValue(RepositoryResult.error(msg));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<ValoracionResponse>> call, Throwable t) {
+                liveData.postValue(RepositoryResult.error("Error de red al guardar la valoración"));
+            }
+        });
+
+        return liveData;
+    }
+
+    @Override
+    public LiveData<RepositoryResult<PromedioValoracionResponse>> getPromedioValoracionOdontologo(int idOdontologo) {
+        MutableLiveData<RepositoryResult<PromedioValoracionResponse>> liveData = new MutableLiveData<>();
+
+        apiService.getPromedioValoracion(idOdontologo).enqueue(new Callback<ApiResponse<PromedioValoracionResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<PromedioValoracionResponse>> call,
+                    Response<ApiResponse<PromedioValoracionResponse>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    liveData.postValue(RepositoryResult.success(response.body().getData()));
+                } else {
+                    liveData.postValue(RepositoryResult.error("Error al cargar el promedio de valoraciones"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<PromedioValoracionResponse>> call, Throwable t) {
+                liveData.postValue(RepositoryResult.error("Error de red al cargar el promedio de valoraciones"));
             }
         });
 

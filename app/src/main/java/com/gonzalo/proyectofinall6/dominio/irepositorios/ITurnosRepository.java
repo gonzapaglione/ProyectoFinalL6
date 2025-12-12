@@ -6,6 +6,7 @@ import com.gonzalo.proyectofinall6.data.remote.dto.ApiResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.HorarioDisponible;
 import com.gonzalo.proyectofinall6.data.remote.dto.MotivoConsulta;
 import com.gonzalo.proyectofinall6.data.remote.dto.OdontologoResponse;
+import com.gonzalo.proyectofinall6.data.remote.dto.PromedioValoracionResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.TurnoResponse;
 import com.gonzalo.proyectofinall6.dominio.modelos.RepositoryResult;
 import com.gonzalo.proyectofinall6.dominio.modelos.Turno;
@@ -44,4 +45,8 @@ public interface ITurnosRepository {
     LiveData<RepositoryResult<TurnosResumen>> getTurnosDelPacienteActual();
 
     LiveData<RepositoryResult<Void>> cancelarTurno(int turnoId, String motivo);
+
+    LiveData<RepositoryResult<Void>> crearValoracion(int turnoId, int estrellas, String comentario);
+
+    LiveData<RepositoryResult<PromedioValoracionResponse>> getPromedioValoracionOdontologo(int idOdontologo);
 }

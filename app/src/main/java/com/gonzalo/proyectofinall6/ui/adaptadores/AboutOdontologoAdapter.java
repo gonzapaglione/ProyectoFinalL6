@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,19 +18,33 @@ import com.google.android.material.color.MaterialColors;
 import com.gonzalo.proyectofinall6.R;
 import com.gonzalo.proyectofinall6.data.remote.dto.EspecialidadResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.OdontologoResponse;
+import com.gonzalo.proyectofinall6.data.remote.dto.PromedioValoracionResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.HashMap;
 
 public class AboutOdontologoAdapter extends RecyclerView.Adapter<AboutOdontologoAdapter.ViewHolder> {
 
     private final List<OdontologoResponse> odontologos = new ArrayList<>();
+    private final Map<Integer, PromedioValoracionResponse> promedios = new HashMap<>();
 
     @SuppressLint("NotifyDataSetChanged")
     public void submitList(List<OdontologoResponse> items) {
         odontologos.clear();
         if (items != null) {
             odontologos.addAll(items);
+        }
+        notifyDataSetChanged();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void submitPromedios(Map<Integer, PromedioValoracionResponse> nuevosPromedios) {
+        promedios.clear();
+        if (nuevosPromedios != null) {
+            promedios.putAll(nuevosPromedios);
         }
         notifyDataSetChanged();
     }
@@ -43,7 +58,9 @@ public class AboutOdontologoAdapter extends RecyclerView.Adapter<AboutOdontologo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(odontologos.get(position));
+        OdontologoResponse odontologo = odontologos.get(position);
+        PromedioValoracionResponse promedio = promedios.get(odontologo.getId());
+        holder.bind(odontologo, promedio);
     }
 
     @Override
@@ -53,21 +70,36 @@ public class AboutOdontologoAdapter extends RecyclerView.Adapter<AboutOdontologo
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvNombre;
+        private final TextView tvPromedioLabel;
+        private final RatingBar rbPromedio;
         private final ChipGroup chipGroup;
         private final ImageView ivAvatar;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvNombre = itemView.findViewById(R.id.tvNombre);
+            tvPromedioLabel = itemView.findViewById(R.id.tvPromedioLabel);
+            rbPromedio = itemView.findViewById(R.id.rbPromedio);
             chipGroup = itemView.findViewById(R.id.chipGroupEspecialidades);
             ivAvatar = itemView.findViewById(R.id.ivAvatar);
         }
 
-        void bind(OdontologoResponse odontologo) {
+        void bind(OdontologoResponse odontologo, PromedioValoracionResponse promedio) {
             String nombreCompleto = odontologo.getNombre() + " " + odontologo.getApellido();
             tvNombre.setText(nombreCompleto);
 
             ivAvatar.setImageResource(getPhotoResId(odontologo));
+
+            if (promedio != null && promedio.getPromedio() != null && promedio.getCantidad() != null
+                    && promedio.getCantidad() > 0) {
+                tvPromedioLabel.setVisibility(View.VISIBLE);
+                rbPromedio.setVisibility(View.VISIBLE);
+                tvPromedioLabel.setText(String.format(Locale.getDefault(), "Promedio %.1f", promedio.getPromedio()));
+                rbPromedio.setRating(promedio.getPromedio().floatValue());
+            } else {
+                tvPromedioLabel.setVisibility(View.GONE);
+                rbPromedio.setVisibility(View.GONE);
+            }
 
             chipGroup.removeAllViews();
             List<EspecialidadResponse> especialidades = odontologo.getEspecialidades();

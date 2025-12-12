@@ -25,7 +25,7 @@
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/chipEstado"/>
+            app:layout_constraintEnd_toStartOf="@+id/chipEstado" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/chipEstado"
@@ -46,7 +46,7 @@
                 tools:text="Cancelado"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="@color/status_cancelled_text"/>
+                android:textColor="@color/status_cancelled_text" />
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
@@ -76,7 +76,7 @@
             android:layout_height="1dp"
             android:layout_marginTop="12dp"
             android:background="#E5E7EB"
-            app:layout_constraintTop_toBottomOf="@id/tvCobertura"/>
+            app:layout_constraintTop_toBottomOf="@id/tvCobertura" />
 
         <TextView
             android:id="@+id/tvMotivo"
@@ -89,13 +89,37 @@
             tools:text="Motivo consulta: Dolor dental - de muela" />
 
         <TextView
+            android:id="@+id/tvCancelacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="13sp"
+            android:textColor="@color/text_secondary"
+            android:textStyle="italic"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/tvMotivo"
+            tools:text="Motivo cancelación: Me sentía mal" />
+
+        <TextView
+            android:id="@+id/tvResena"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="13sp"
+            android:textColor="@color/text_secondary"
+            android:textStyle="italic"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/tvCancelacion"
+            tools:text="Muy buena atención" />
+
+        <TextView
             android:id="@+id/tvTratamiento"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textSize="13sp"
             android:textColor="@color/text_secondary"
-            app:layout_constraintTop_toBottomOf="@id/tvMotivo"
+            app:layout_constraintTop_toBottomOf="@id/tvResena"
             tools:text="Tratamiento: Evolución" />
 
         <com.google.android.material.button.MaterialButton
@@ -111,6 +135,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTratamiento" />
 
+        <TextView
+            android:id="@+id/tvCancelacionInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textColor="@color/text_secondary"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnCancelar"
+            app:layout_constraintTop_toTopOf="@id/btnCancelar"
+            app:layout_constraintBottom_toBottomOf="@id/btnCancelar"
+            tools:text="Los turnos solo se pueden cancelar hasta 3 horas antes.\nEste turno ya no entra en el horario de cancelación." />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDetalle"
             android:layout_width="wrap_content"
@@ -122,6 +160,64 @@
             app:backgroundTint="@color/main_blue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTratamiento" />
+
+        <TextView
+            android:id="@+id/tvValoracionMensaje"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textColor="@color/text_secondary"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnDetalle"
+            app:layout_constraintTop_toBottomOf="@id/tvTratamiento"
+            tools:text="Ayudanos valorando el turno" />
+
+        <TextView
+            android:id="@+id/tvValoracionCta"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textColor="@color/text_secondary"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnDetalle"
+            app:layout_constraintTop_toBottomOf="@id/tvTratamiento"
+            android:text="@string/nos_ayudas"
+            tools:text="¿Nos ayudas con tu reseña?" />
+
+        <TextView
+            android:id="@+id/tvValoracionLink"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="12dp"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textColor="@color/main_blue"
+            android:visibility="gone"
+            android:text="@string/click_aqui"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnDetalle"
+            app:layout_constraintTop_toBottomOf="@id/tvValoracionCta"
+            tools:text="Haz clic aquí" />
+
+        <RatingBar
+            android:id="@+id/rbValoracion"
+            style="?attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:stepSize="1"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/tvValoracionMensaje"
+            app:layout_constraintTop_toBottomOf="@id/tvValoracionMensaje"
+            tools:rating="4" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

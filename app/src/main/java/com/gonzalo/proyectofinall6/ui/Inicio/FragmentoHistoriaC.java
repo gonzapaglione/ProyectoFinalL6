@@ -46,7 +46,7 @@ public class FragmentoHistoriaC extends Fragment implements TurnosAdapter.OnTurn
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragmento_historiac, container, false);
     }
 
@@ -119,6 +119,20 @@ public class FragmentoHistoriaC extends Fragment implements TurnosAdapter.OnTurn
                 Toast.makeText(getContext(), "Error al cancelar el turno", Toast.LENGTH_SHORT).show();
             }
         });
+
+        turnosViewModel.getValoracionGuardada().observe(getViewLifecycleOwner(), success -> {
+            if (success == null)
+                return;
+            if (success) {
+                Toast.makeText(getContext(), "¡Gracias por valorar tu turno!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        turnosViewModel.getValoracionError().observe(getViewLifecycleOwner(), err -> {
+            if (err != null) {
+                Toast.makeText(getContext(), err, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void showEmptyState() {
@@ -138,5 +152,10 @@ public class FragmentoHistoriaC extends Fragment implements TurnosAdapter.OnTurn
         Toast.makeText(getContext(), "Viendo detalle del turno...", Toast.LENGTH_SHORT).show();
         // TODO: Aquí debes implementar la navegación a la pantalla de detalle
         // del turno, pasando el turnoId como argumento.
+    }
+
+    @Override
+    public void onValorarTurno(int turnoId, int estrellas, String comentario) {
+        turnosViewModel.valorarTurno(turnoId, estrellas, comentario);
     }
 }

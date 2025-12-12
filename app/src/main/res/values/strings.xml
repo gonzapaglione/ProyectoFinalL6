@@ -109,8 +109,15 @@
     <string name="descripcion_reserva_exitosa">Icono de checkmark verde</string>
     <string name="volver_al_inicio">Volver al inicio</string>
     <string name="historia_clinica">Historia Clínica</string>
+
+    <string name="nos_ayudas">¿Nos ayudas con tu reseña?</string>
+    <string name="click_aqui">Haz clic aquí</string>
+    <string name="tu_opinion_ayuda">Tu opinión nos ayuda a mejorar.</string>
+    <string name="turno_valoracion_gracias">Gracias por tus comentarios, nos ayudan a mejorar</string>
     <string name="no_hay_turnos_programados">No hay turnos programados</string>
     <string name="proximos_turnos">Próximos Turnos</string>
+
+    <string name="turno_cancelacion_fuera_de_horario">Los turnos solo se pueden cancelar hasta 3 horas antes.</string>
 
 
 </resources>

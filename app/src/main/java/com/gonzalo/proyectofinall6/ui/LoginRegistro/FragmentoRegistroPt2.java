@@ -141,8 +141,46 @@ public class FragmentoRegistroPt2 extends Fragment {
         String telefono = binding.etTelefono.getText().toString().trim();
         String direccion = binding.etDireccion.getText().toString().trim();
 
-        if (dni.isEmpty() || telefono.isEmpty() || direccion.isEmpty()) {
-            Toast.makeText(getContext(), "Completa todos los campos", Toast.LENGTH_SHORT).show();
+        binding.etDni.setError(null);
+        binding.etTelefono.setError(null);
+        binding.etDireccion.setError(null);
+
+        if (dni.isEmpty()) {
+            binding.etDni.setError("Campo obligatorio");
+            binding.etDni.requestFocus();
+            return;
+        }
+        if (!dni.matches("^\\d{7,9}$")) {
+            binding.etDni.setError("DNI inválido (7 a 9 dígitos)");
+            binding.etDni.requestFocus();
+            return;
+        }
+
+        if (telefono.isEmpty()) {
+            binding.etTelefono.setError("Campo obligatorio");
+            binding.etTelefono.requestFocus();
+            return;
+        }
+        String telefonoNormalizado = telefono.replaceAll("[\\s\\-()]", "");
+        if (!telefonoNormalizado.matches("^\\+?\\d{8,15}$")) {
+            binding.etTelefono.setError("Teléfono inválido");
+            binding.etTelefono.requestFocus();
+            return;
+        }
+
+        if (direccion.isEmpty()) {
+            binding.etDireccion.setError("Campo obligatorio");
+            binding.etDireccion.requestFocus();
+            return;
+        }
+        if (direccion.length() < 5) {
+            binding.etDireccion.setError("Dirección muy corta");
+            binding.etDireccion.requestFocus();
+            return;
+        }
+
+        if (obrasSocialesSeleccionadas == null || obrasSocialesSeleccionadas.isEmpty()) {
+            Toast.makeText(getContext(), "Selecciona al menos una cobertura", Toast.LENGTH_SHORT).show();
             return;
         }
 

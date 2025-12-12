@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <androidx.appcompat.widget.AppCompatRatingBar
+        android:id="@+id/rbValorar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:stepSize="1"
+        android:rating="1"
+        android:isIndicator="false"
+        android:progressTint="@android:color/holo_orange_light"
+        android:secondaryProgressTint="@android:color/holo_orange_light"
+        android:progressBackgroundTint="@color/text_secondary" />
+
+    <EditText
+        android:id="@+id/etComentario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="Comentario (opcional)"
+        android:inputType="textCapSentences|textMultiLine"
+        android:minLines="2" />
+
+</LinearLayout>
