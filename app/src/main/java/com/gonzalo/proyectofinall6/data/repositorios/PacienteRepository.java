@@ -1,9 +1,9 @@
 package com.gonzalo.proyectofinall6.data.repositorios;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.gonzalo.proyectofinall6.data.remote.api.ApiService;
@@ -11,6 +11,7 @@ import com.gonzalo.proyectofinall6.data.remote.api.RetrofitClient;
 import com.gonzalo.proyectofinall6.data.remote.dto.EditarPacienteRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.PacienteResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.PasswordRequest;
+import com.gonzalo.proyectofinall6.dominio.irepositorios.ISessionRepository;
 import com.gonzalo.proyectofinall6.dominio.irepositorios.IPacienteRepository;
 import com.gonzalo.proyectofinall6.dominio.modelos.ObraSocial;
 import com.gonzalo.proyectofinall6.dominio.modelos.Paciente;
@@ -26,15 +27,15 @@ import retrofit2.Response;
 public class PacienteRepository implements IPacienteRepository {
 
     private final ApiService apiService;
-    private final SharedPreferences sharedPreferences;
+    private final ISessionRepository sessionRepository;
 
     public PacienteRepository(Context context) {
         this.apiService = RetrofitClient.getApiService();
-        this.sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        this.sessionRepository = new SessionRepository(context);
     }
 
     private int getUserId() {
-        return sharedPreferences.getInt("user_id", -1);
+        return sessionRepository.getUserId();
     }
 
     @Override
@@ -68,12 +69,15 @@ public class PacienteRepository implements IPacienteRepository {
 
     @Override
     public LiveData<RepositoryResult<List<ObraSocial>>> getObrasSocialesDelPacienteActual() {
-        MutableLiveData<RepositoryResult<List<ObraSocial>>> liveData = new MutableLiveData<>();
+        MediatorLiveData<RepositoryResult<List<ObraSocial>>> liveData = new MediatorLiveData<>();
 
         LiveData<RepositoryResult<Paciente>> pacienteLiveData = getPacienteActual();
-        pacienteLiveData.observeForever(result -> {
-            if (result == null)
+        liveData.addSource(pacienteLiveData, result -> {
+            if (result == null) {
+                liveData.removeSource(pacienteLiveData);
                 return;
+            }
+
             if (result.isSuccess() && result.getData() != null) {
                 List<ObraSocial> obras = result.getData().getObrasSociales();
                 liveData.setValue(RepositoryResult.success(obras == null ? Collections.emptyList() : obras));
@@ -81,6 +85,8 @@ public class PacienteRepository implements IPacienteRepository {
                 liveData.setValue(RepositoryResult
                         .error(result.getError() == null ? "Error al obtener obras sociales" : result.getError()));
             }
+
+            liveData.removeSource(pacienteLiveData);
         });
 
         return liveData;

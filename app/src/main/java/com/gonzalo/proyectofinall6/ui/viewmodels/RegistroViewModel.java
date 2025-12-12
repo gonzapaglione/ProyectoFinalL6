@@ -1,8 +1,8 @@
 package com.gonzalo.proyectofinall6.ui.viewmodels;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.gonzalo.proyectofinall6.data.remote.dto.RegistroRequest;
@@ -54,8 +54,11 @@ public class RegistroViewModel extends ViewModel {
     private final IObrasSocialesRepository obrasSocialesRepository = new ObrasSocialesRepository();
 
     private final MutableLiveData<RegistroData> registroData = new MutableLiveData<>();
-    private final MutableLiveData<List<ObraSocial>> obrasSocialesDisponibles = new MutableLiveData<>();
-    private final MutableLiveData<RepositoryResult<RegistroResponse>> registroPacienteResult = new MutableLiveData<>();
+    private final MediatorLiveData<List<ObraSocial>> obrasSocialesDisponibles = new MediatorLiveData<>();
+    private final MediatorLiveData<RepositoryResult<RegistroResponse>> registroPacienteResult = new MediatorLiveData<>();
+
+    private LiveData<RepositoryResult<List<ObraSocial>>> obrasSource;
+    private LiveData<RepositoryResult<RegistroResponse>> registroSource;
 
     public void setRegistroData(String email, String password, String nombre, String apellido) {
         registroData.setValue(new RegistroData(email, password, nombre, apellido));
@@ -78,19 +81,21 @@ public class RegistroViewModel extends ViewModel {
     }
 
     public void cargarObrasSociales() {
-        LiveData<RepositoryResult<List<ObraSocial>>> source = obrasSocialesRepository.getObrasSociales();
-        Observer<RepositoryResult<List<ObraSocial>>> observer = new Observer<RepositoryResult<List<ObraSocial>>>() {
-            @Override
-            public void onChanged(RepositoryResult<List<ObraSocial>> result) {
-                if (result != null && result.isSuccess()) {
-                    obrasSocialesDisponibles.setValue(result.getData());
-                } else {
-                    obrasSocialesDisponibles.setValue(new ArrayList<>());
-                }
-                source.removeObserver(this);
+        if (obrasSource != null) {
+            obrasSocialesDisponibles.removeSource(obrasSource);
+        }
+
+        obrasSource = obrasSocialesRepository.getObrasSociales();
+        obrasSocialesDisponibles.addSource(obrasSource, result -> {
+            if (result != null && result.isSuccess()) {
+                obrasSocialesDisponibles.setValue(result.getData());
+            } else {
+                obrasSocialesDisponibles.setValue(new ArrayList<>());
             }
-        };
-        source.observeForever(observer);
+            if (obrasSource != null) {
+                obrasSocialesDisponibles.removeSource(obrasSource);
+            }
+        });
     }
 
     public void registrarPaciente(String dni, String telefono, String direccion, List<ObraSocial> obrasSeleccionadas) {
@@ -119,14 +124,16 @@ public class RegistroViewModel extends ViewModel {
                 direccion,
                 obrasParaEnviar);
 
-        LiveData<RepositoryResult<RegistroResponse>> source = authRepository.registrarPaciente(request);
-        Observer<RepositoryResult<RegistroResponse>> observer = new Observer<RepositoryResult<RegistroResponse>>() {
-            @Override
-            public void onChanged(RepositoryResult<RegistroResponse> result) {
-                registroPacienteResult.setValue(result);
-                source.removeObserver(this);
+        if (registroSource != null) {
+            registroPacienteResult.removeSource(registroSource);
+        }
+
+        registroSource = authRepository.registrarPaciente(request);
+        registroPacienteResult.addSource(registroSource, result -> {
+            registroPacienteResult.setValue(result);
+            if (registroSource != null) {
+                registroPacienteResult.removeSource(registroSource);
             }
-        };
-        source.observeForever(observer);
+        });
     }
 }

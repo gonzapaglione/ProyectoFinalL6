@@ -19,9 +19,9 @@
 
     <fragment
         android:id="@+id/navigation_turns"
-        android:name="com.gonzalo.proyectofinall6.ui.Inicio.FragmentoTurnos"
+        android:name="com.gonzalo.proyectofinall6.ui.Inicio.FragmentoHistoriaC"
         android:label="Turnos"
-        tools:layout="@layout/fragmento_turnos" />
+        tools:layout="@layout/fragmento_historiac" />
 
     <fragment
         android:id="@+id/navigation_about"

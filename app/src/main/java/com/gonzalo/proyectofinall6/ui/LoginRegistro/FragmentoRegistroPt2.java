@@ -2,7 +2,6 @@ package com.gonzalo.proyectofinall6.ui.LoginRegistro;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +18,7 @@ import com.gonzalo.proyectofinall6.ui.viewmodels.RegistroViewModel;
 import com.google.android.material.chip.Chip;
 import com.gonzalo.proyectofinall6.ui.Inicio.HomeActivity;
 import com.gonzalo.proyectofinall6.databinding.FragmentoRegistroPt2Binding;
+import com.gonzalo.proyectofinall6.data.repositorios.SessionRepository;
 import com.gonzalo.proyectofinall6.dominio.modelos.ObraSocial;
 
 import com.gonzalo.proyectofinall6.dominio.modelos.RepositoryResult;
@@ -36,11 +36,13 @@ public class FragmentoRegistroPt2 extends Fragment {
     private List<ObraSocial> obrasSocialesSeleccionadas = new ArrayList<>();
     private RegistroViewModel registroViewModel;
     private boolean particularAgregado = false;
+    private SessionRepository sessionRepository;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registroViewModel = new ViewModelProvider(requireActivity()).get(RegistroViewModel.class);
+        sessionRepository = new SessionRepository(requireContext());
     }
 
     @Nullable
@@ -106,12 +108,7 @@ public class FragmentoRegistroPt2 extends Fragment {
                 RegistroResponse response = result.getData();
                 Toast.makeText(getContext(), "Registro exitoso", Toast.LENGTH_SHORT).show();
 
-                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_prefs",
-                        Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt("user_id", response.getData().getIdPaciente());
-                editor.putBoolean("is_logged_in", true);
-                editor.apply();
+                sessionRepository.saveSession(response.getData().getIdPaciente(), true);
 
                 Intent intent = new Intent(getActivity(), HomeActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

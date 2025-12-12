@@ -1,7 +1,6 @@
 package com.gonzalo.proyectofinall6.data.repositorios;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -21,6 +20,7 @@ import com.gonzalo.proyectofinall6.data.remote.dto.PacienteResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.ProximosTurnosResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.TurnoRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.TurnoResponse;
+import com.gonzalo.proyectofinall6.dominio.irepositorios.ISessionRepository;
 import com.gonzalo.proyectofinall6.dominio.irepositorios.ITurnosRepository;
 import com.gonzalo.proyectofinall6.dominio.modelos.RepositoryResult;
 import com.gonzalo.proyectofinall6.dominio.modelos.Turno;
@@ -40,15 +40,15 @@ import retrofit2.Response;
 public class TurnosRepository implements ITurnosRepository {
 
     private final ApiService apiService;
-    private final SharedPreferences sharedPreferences;
+    private final ISessionRepository sessionRepository;
 
     public TurnosRepository(Context context) {
         this.apiService = RetrofitClient.getApiService();
-        this.sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        this.sessionRepository = new SessionRepository(context);
     }
 
     private int getUserId() {
-        return sharedPreferences.getInt("user_id", -1);
+        return sessionRepository.getUserId();
     }
 
     @Override

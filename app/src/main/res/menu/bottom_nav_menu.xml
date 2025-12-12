@@ -13,7 +13,7 @@
     <item
         android:id="@+id/navigation_turns"
         android:icon="@drawable/ic_calendario"
-        android:title="@string/title_turns" />
+        android:title="@string/title_hc" />
 
     <item
         android:id="@+id/navigation_about"

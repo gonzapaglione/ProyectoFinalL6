@@ -2,7 +2,6 @@ package com.gonzalo.proyectofinall6.ui.Inicio;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,19 +27,13 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputLayout;
 import com.gonzalo.proyectofinall6.ui.MainActivity;
 import com.gonzalo.proyectofinall6.R;
-import com.gonzalo.proyectofinall6.data.remote.api.ApiService;
-import com.gonzalo.proyectofinall6.data.remote.api.RetrofitClient;
 import com.gonzalo.proyectofinall6.data.remote.dto.EditarPacienteRequest;
-import com.gonzalo.proyectofinall6.data.remote.dto.ObrasSocialesResponse;
+import com.gonzalo.proyectofinall6.data.repositorios.SessionRepository;
 import com.gonzalo.proyectofinall6.dominio.modelos.ObraSocial;
 import com.gonzalo.proyectofinall6.dominio.modelos.Paciente;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class FragmentoPerfil extends Fragment {
 
@@ -56,6 +49,7 @@ public class FragmentoPerfil extends Fragment {
     private TextInputLayout tilCobertura;
     private List<ObraSocial> todasLasObrasSociales;
     private final List<ObraSocial> obrasSocialesSeleccionadas = new ArrayList<>();
+    private SessionRepository sessionRepository;
 
     public FragmentoPerfil() {
         // Required empty public constructor
@@ -65,11 +59,12 @@ public class FragmentoPerfil extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         perfilViewModel = new ViewModelProvider(this).get(PerfilViewModel.class);
+        sessionRepository = new SessionRepository(requireContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragmento_perfil, container, false);
     }
 
@@ -80,7 +75,7 @@ public class FragmentoPerfil extends Fragment {
         observeViewModel();
 
         perfilViewModel.loadPacienteData();
-        loadObrasSociales();
+        perfilViewModel.cargarCatalogoObrasSociales();
 
         btnEditarInformacion.setOnClickListener(v -> toggleEditState());
         btnLogout.setOnClickListener(v -> logout());
@@ -133,6 +128,23 @@ public class FragmentoPerfil extends Fragment {
 
     private void observeViewModel() {
         perfilViewModel.getPaciente().observe(getViewLifecycleOwner(), this::populateUI);
+        perfilViewModel.getObrasSocialesCatalogo().observe(getViewLifecycleOwner(), obras -> {
+            if (obras == null || obras.isEmpty()) {
+                return;
+            }
+            todasLasObrasSociales = obras;
+            ArrayAdapter<ObraSocial> adapter = new ArrayAdapter<>(getContext(),
+                    android.R.layout.simple_dropdown_item_1line, todasLasObrasSociales);
+            actvCobertura.setAdapter(adapter);
+            actvCobertura.setOnItemClickListener((parent, view, position, id) -> {
+                ObraSocial seleccionada = (ObraSocial) parent.getItemAtPosition(position);
+                if (!obrasSocialesSeleccionadas.contains(seleccionada)) {
+                    obrasSocialesSeleccionadas.add(seleccionada);
+                    actualizarChips();
+                }
+                actvCobertura.setText("");
+            });
+        });
         perfilViewModel.getError().observe(getViewLifecycleOwner(), error -> {
             Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
         });
@@ -149,8 +161,10 @@ public class FragmentoPerfil extends Fragment {
         etDireccion.setText(paciente.getDireccion());
         etEmail.setText(paciente.getEmail());
 
-        if (tvUsername != null) tvUsername.setText(paciente.getNombre() + " " + paciente.getApellido());
-        if (tvEmailHeader != null) tvEmailHeader.setText(paciente.getEmail());
+        if (tvUsername != null)
+            tvUsername.setText(paciente.getNombre() + " " + paciente.getApellido());
+        if (tvEmailHeader != null)
+            tvEmailHeader.setText(paciente.getEmail());
 
         if (paciente.getObrasSociales() != null) {
             obrasSocialesSeleccionadas.clear();
@@ -184,7 +198,8 @@ public class FragmentoPerfil extends Fragment {
         String direccion = etDireccion.getText().toString();
         String email = etEmail.getText().toString();
 
-        EditarPacienteRequest request = new EditarPacienteRequest(dni, nombre, apellido, telefono, direccion, email, "paciente", obrasSocialesSeleccionadas);
+        EditarPacienteRequest request = new EditarPacienteRequest(dni, nombre, apellido, telefono, direccion, email,
+                "paciente", obrasSocialesSeleccionadas);
 
         perfilViewModel.editarPaciente(request);
     }
@@ -195,35 +210,6 @@ public class FragmentoPerfil extends Fragment {
         etDni.setEnabled(enable);
         etTelefono.setEnabled(enable);
         etDireccion.setEnabled(enable);
-    }
-
-    private void loadObrasSociales() {
-        ApiService apiService = RetrofitClient.getApiService();
-        apiService.getObrasSociales().enqueue(new Callback<ObrasSocialesResponse>() {
-            @Override
-            public void onResponse(Call<ObrasSocialesResponse> call, Response<ObrasSocialesResponse> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    todasLasObrasSociales = response.body().getData();
-                    ArrayAdapter<ObraSocial> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, todasLasObrasSociales);
-                    actvCobertura.setAdapter(adapter);
-                    actvCobertura.setOnItemClickListener((parent, view, position, id) -> {
-                        ObraSocial seleccionada = (ObraSocial) parent.getItemAtPosition(position);
-                        if (!obrasSocialesSeleccionadas.contains(seleccionada)) {
-                            obrasSocialesSeleccionadas.add(seleccionada);
-                            actualizarChips();
-                        }
-                        actvCobertura.setText("");
-                    });
-                } else {
-                    Toast.makeText(getContext(), "Error al cargar las obras sociales", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ObrasSocialesResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void actualizarChips() {
@@ -256,10 +242,7 @@ public class FragmentoPerfil extends Fragment {
                 .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.clear();
-                        editor.apply();
+                        sessionRepository.clearSession();
 
                         Intent intent = new Intent(getActivity(), MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

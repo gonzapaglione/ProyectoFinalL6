@@ -1,8 +1,6 @@
 package com.gonzalo.proyectofinall6.ui.LoginRegistro;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,22 +9,18 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.gonzalo.proyectofinall6.R;
 import com.gonzalo.proyectofinall6.ui.Inicio.HomeActivity;
 import com.gonzalo.proyectofinall6.databinding.FragmentoLoginBinding;
-import com.gonzalo.proyectofinall6.data.remote.dto.LoginRequest;
-import com.gonzalo.proyectofinall6.data.remote.dto.LoginResponse;
-import com.gonzalo.proyectofinall6.data.remote.api.RetrofitClient;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import com.gonzalo.proyectofinall6.ui.viewmodels.LoginViewModel;
 
 public class FragmentoLogin extends Fragment {
 
     private FragmentoLoginBinding binding;
+    private LoginViewModel loginViewModel;
 
     public FragmentoLogin() {
         // Required empty public constructor
@@ -43,6 +37,9 @@ public class FragmentoLogin extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        observeViewModel();
+
         binding.tvRegistrarse.setOnClickListener(v -> {
             try {
                 // Usamos NavController para navegar a la siguiente pantalla
@@ -54,6 +51,34 @@ public class FragmentoLogin extends Fragment {
 
         binding.btnIngresar.setOnClickListener(v -> {
             realizarLogin();
+        });
+    }
+
+    private void observeViewModel() {
+        loginViewModel.getLoginResult().observe(getViewLifecycleOwner(), result -> {
+            if (result == null)
+                return;
+
+            binding.btnIngresar.setEnabled(true);
+            binding.btnIngresar.setText("Ingresar");
+
+            if (result.isSuccess() && result.getData() != null && result.getData().getData() != null) {
+                Toast.makeText(getContext(),
+                        "Bienvenido " + result.getData().getData().getNombre(),
+                        Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(getActivity(), HomeActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                if (getActivity() != null)
+                    getActivity().finish();
+            } else {
+                Toast.makeText(getContext(),
+                        result.getError() != null ? result.getError() : "Error en el login",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            loginViewModel.resetLoginResult();
         });
     }
 
@@ -76,65 +101,8 @@ public class FragmentoLogin extends Fragment {
         binding.btnIngresar.setEnabled(false);
         binding.btnIngresar.setText("Ingresando...");
 
-        LoginRequest loginRequest = new LoginRequest(email, password);
-
-        RetrofitClient.getApiService().login(loginRequest)
-                .enqueue(new Callback<LoginResponse>() {
-                    @Override
-                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                        binding.btnIngresar.setEnabled(true);
-                        binding.btnIngresar.setText("Ingresar");
-
-                        if (response.isSuccessful() && response.body() != null) {
-                            LoginResponse loginResponse = response.body();
-
-                            if (loginResponse.isSuccess()) {
-                                // Login exitoso
-                                Toast.makeText(getContext(),
-                                        "Bienvenido " + loginResponse.getData().getNombre(),
-                                        Toast.LENGTH_SHORT).show();
-
-                                // Guardar datos del usuario y estado de la sesión
-                                boolean rememberMe = binding.cbRecordar.isChecked();
-                                saveUserSession(loginResponse.getData(), rememberMe);
-
-                                // Navegar a la pantalla principal
-                                Intent intent = new Intent(getActivity(), HomeActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                                getActivity().finish(); // Cierra la actividad de Login
-
-                            } else {
-                                Toast.makeText(getContext(),
-                                        loginResponse.getMessage(),
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(getContext(),
-                                    "Error: " + response.code(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<LoginResponse> call, Throwable t) {
-                        binding.btnIngresar.setEnabled(true);
-                        binding.btnIngresar.setText("Ingresar");
-
-                        Toast.makeText(getContext(),
-                                "Error de conexión: " + t.getMessage(),
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
-    }
-
-    private void saveUserSession(LoginResponse.UserData userData, boolean rememberMe) {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putBoolean("is_logged_in", rememberMe);
-        editor.putInt("user_id", userData.getUserId());
-        editor.apply();
+        boolean rememberMe = binding.cbRecordar.isChecked();
+        loginViewModel.login(email, password, rememberMe);
     }
 
     @Override

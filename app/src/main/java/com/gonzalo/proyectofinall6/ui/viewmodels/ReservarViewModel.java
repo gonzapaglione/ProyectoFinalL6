@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.gonzalo.proyectofinall6.data.repositorios.PacienteRepository;
@@ -19,23 +20,35 @@ import com.gonzalo.proyectofinall6.dominio.irepositorios.ITurnosRepository;
 import com.gonzalo.proyectofinall6.dominio.modelos.ObraSocial;
 import com.gonzalo.proyectofinall6.dominio.modelos.RepositoryResult;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.List;
 
 public class ReservarViewModel extends AndroidViewModel {
 
-    private final MutableLiveData<List<OdontologoResponse>> odontologos = new MutableLiveData<>();
+    private final MediatorLiveData<List<OdontologoResponse>> odontologos = new MediatorLiveData<>();
     private final MutableLiveData<Integer> odontologoId = new MutableLiveData<>();
     private final MutableLiveData<String> odontologoNombre = new MutableLiveData<>();
     private final MutableLiveData<String> fecha = new MutableLiveData<>();
     private final MutableLiveData<String> horaInicio = new MutableLiveData<>();
-    private final MutableLiveData<List<HorarioDisponible>> horariosDisponibles = new MutableLiveData<>();
-    private final MutableLiveData<List<MotivoConsulta>> motivosConsulta = new MutableLiveData<>();
+    private final MediatorLiveData<List<HorarioDisponible>> horariosDisponibles = new MediatorLiveData<>();
+    private final MediatorLiveData<List<MotivoConsulta>> motivosConsulta = new MediatorLiveData<>();
     private final MutableLiveData<Integer> motivoConsultaId = new MutableLiveData<>();
     private final MutableLiveData<String> motivoConsultaNombre = new MutableLiveData<>();
-    private final MutableLiveData<List<ObraSocial>> obrasSociales = new MutableLiveData<>();
+    private final MediatorLiveData<List<ObraSocial>> obrasSociales = new MediatorLiveData<>();
     private final MutableLiveData<Integer> obraSocialId = new MutableLiveData<>();
     private final MutableLiveData<String> obraSocialNombre = new MutableLiveData<>();
-    private final MutableLiveData<ApiResponse<TurnoResponse>> turnoCreado = new MutableLiveData<>();
+    private final MediatorLiveData<ApiResponse<TurnoResponse>> turnoCreado = new MediatorLiveData<>();
+
+    private final MediatorLiveData<String> fechaHoraFormateada = new MediatorLiveData<>();
+
+    private LiveData<RepositoryResult<List<OdontologoResponse>>> odontologosSource;
+    private LiveData<RepositoryResult<List<MotivoConsulta>>> motivosSource;
+    private LiveData<RepositoryResult<List<ObraSocial>>> obrasSource;
+    private LiveData<RepositoryResult<List<HorarioDisponible>>> horariosSource;
+    private LiveData<RepositoryResult<ApiResponse<TurnoResponse>>> crearTurnoSource;
 
     private final ITurnosRepository turnosRepository;
     private final IPacienteRepository pacienteRepository;
@@ -44,6 +57,32 @@ public class ReservarViewModel extends AndroidViewModel {
         super(application);
         this.turnosRepository = new TurnosRepository(application.getApplicationContext());
         this.pacienteRepository = new PacienteRepository(application.getApplicationContext());
+
+        fechaHoraFormateada.addSource(fecha, v -> actualizarFechaHoraFormateada());
+        fechaHoraFormateada.addSource(horaInicio, v -> actualizarFechaHoraFormateada());
+    }
+
+    private void actualizarFechaHoraFormateada() {
+        String f = fecha.getValue();
+        String h = horaInicio.getValue();
+        if (f == null || h == null)
+            return;
+
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date date = inputFormat.parse(f);
+            if (date == null)
+                return;
+
+            SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE, dd 'de' MMMM", new Locale("es", "ES"));
+            String formattedDate = dayFormat.format(date);
+
+            String formattedTime = h.length() >= 5 ? h.substring(0, 5) : h;
+            // Mantengo el sufijo como estaba en tu UI (AM).
+            fechaHoraFormateada.setValue(formattedDate + " - " + formattedTime + " AM");
+        } catch (ParseException ignored) {
+            // si falla el parseo, no rompemos la UI
+        }
     }
 
     public void crearTurno() {
@@ -53,32 +92,57 @@ public class ReservarViewModel extends AndroidViewModel {
             return;
         }
 
-        turnosRepository.crearTurno(
+        if (crearTurnoSource != null) {
+            turnoCreado.removeSource(crearTurnoSource);
+        }
+
+        crearTurnoSource = turnosRepository.crearTurno(
                 odontologoId.getValue(),
                 fecha.getValue(),
                 horaInicio.getValue(),
                 motivoConsultaId.getValue(),
-                obraSocialId.getValue()).observeForever(result -> {
-                    if (result != null && result.isSuccess()) {
-                        turnoCreado.postValue(result.getData());
-                    } else {
-                        turnoCreado.postValue(null);
-                    }
-                });
+                obraSocialId.getValue());
+
+        turnoCreado.addSource(crearTurnoSource, result -> {
+            if (result != null && result.isSuccess()) {
+                turnoCreado.setValue(result.getData());
+            } else {
+                turnoCreado.setValue(null);
+            }
+            if (crearTurnoSource != null) {
+                turnoCreado.removeSource(crearTurnoSource);
+            }
+        });
     }
 
     public void fetchObrasSociales() {
-        pacienteRepository.getObrasSocialesDelPacienteActual().observeForever(result -> {
+        if (obrasSource != null) {
+            obrasSociales.removeSource(obrasSource);
+        }
+
+        obrasSource = pacienteRepository.getObrasSocialesDelPacienteActual();
+        obrasSociales.addSource(obrasSource, result -> {
             if (result != null && result.isSuccess()) {
-                obrasSociales.postValue(result.getData());
+                obrasSociales.setValue(result.getData());
+            }
+            if (obrasSource != null) {
+                obrasSociales.removeSource(obrasSource);
             }
         });
     }
 
     public void fetchOdontologos() {
-        turnosRepository.getOdontologos().observeForever(result -> {
+        if (odontologosSource != null) {
+            odontologos.removeSource(odontologosSource);
+        }
+
+        odontologosSource = turnosRepository.getOdontologos();
+        odontologos.addSource(odontologosSource, result -> {
             if (result != null && result.isSuccess()) {
-                odontologos.postValue(result.getData());
+                odontologos.setValue(result.getData());
+            }
+            if (odontologosSource != null) {
+                odontologos.removeSource(odontologosSource);
             }
         });
     }
@@ -87,19 +151,35 @@ public class ReservarViewModel extends AndroidViewModel {
         if (odontologoId.getValue() == null || fecha.getValue() == null)
             return;
 
-        turnosRepository.getHorariosDisponibles(odontologoId.getValue(), fecha.getValue()).observeForever(result -> {
+        if (horariosSource != null) {
+            horariosDisponibles.removeSource(horariosSource);
+        }
+
+        horariosSource = turnosRepository.getHorariosDisponibles(odontologoId.getValue(), fecha.getValue());
+        horariosDisponibles.addSource(horariosSource, result -> {
             if (result != null && result.isSuccess()) {
-                horariosDisponibles.postValue(result.getData());
+                horariosDisponibles.setValue(result.getData());
             } else {
-                horariosDisponibles.postValue(null);
+                horariosDisponibles.setValue(null);
+            }
+            if (horariosSource != null) {
+                horariosDisponibles.removeSource(horariosSource);
             }
         });
     }
 
     public void fetchMotivosConsulta() {
-        turnosRepository.getMotivosConsulta().observeForever(result -> {
+        if (motivosSource != null) {
+            motivosConsulta.removeSource(motivosSource);
+        }
+
+        motivosSource = turnosRepository.getMotivosConsulta();
+        motivosConsulta.addSource(motivosSource, result -> {
             if (result != null && result.isSuccess()) {
-                motivosConsulta.postValue(result.getData());
+                motivosConsulta.setValue(result.getData());
+            }
+            if (motivosSource != null) {
+                motivosConsulta.removeSource(motivosSource);
             }
         });
     }
@@ -187,6 +267,10 @@ public class ReservarViewModel extends AndroidViewModel {
 
     public LiveData<ApiResponse<TurnoResponse>> getTurnoCreado() {
         return turnoCreado;
+    }
+
+    public LiveData<String> getFechaHoraFormateada() {
+        return fechaHoraFormateada;
     }
 
 }

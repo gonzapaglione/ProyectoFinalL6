@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.gonzalo.proyectofinall6.data.remote.api.ApiService;
 import com.gonzalo.proyectofinall6.data.remote.api.RetrofitClient;
+import com.gonzalo.proyectofinall6.data.remote.dto.LoginRequest;
+import com.gonzalo.proyectofinall6.data.remote.dto.LoginResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.RegistroRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.RegistroResponse;
 import com.gonzalo.proyectofinall6.dominio.irepositorios.IAuthRepository;
@@ -20,6 +22,36 @@ public class AuthRepository implements IAuthRepository {
 
     public AuthRepository() {
         this.apiService = RetrofitClient.getApiService();
+    }
+
+    @Override
+    public LiveData<RepositoryResult<LoginResponse>> login(LoginRequest request) {
+        MutableLiveData<RepositoryResult<LoginResponse>> liveData = new MutableLiveData<>();
+
+        apiService.login(request).enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    LoginResponse body = response.body();
+                    if (body.isSuccess()) {
+                        liveData.postValue(RepositoryResult.success(body));
+                    } else {
+                        String msg = body.getMessage() != null ? body.getMessage() : "Credenciales inválidas";
+                        liveData.postValue(RepositoryResult.error(msg));
+                    }
+                } else {
+                    liveData.postValue(RepositoryResult.error("Error: " + response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                String message = (t != null && t.getMessage() != null) ? t.getMessage() : "Error de red";
+                liveData.postValue(RepositoryResult.error("Error de red: " + message));
+            }
+        });
+
+        return liveData;
     }
 
     @Override

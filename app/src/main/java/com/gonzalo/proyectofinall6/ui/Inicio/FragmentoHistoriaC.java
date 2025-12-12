@@ -22,7 +22,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-public class FragmentoTurnos extends Fragment implements TurnosAdapter.OnTurnoActionListener {
+public class FragmentoHistoriaC extends Fragment implements TurnosAdapter.OnTurnoActionListener {
 
     private RecyclerView rvUpcoming, rvHistory;
     private TurnosAdapter upcomingAdapter, historyAdapter;
@@ -30,12 +30,12 @@ public class FragmentoTurnos extends Fragment implements TurnosAdapter.OnTurnoAc
     private Button btnReservarTurno;
     private TurnosViewModel turnosViewModel;
 
-    public FragmentoTurnos() {
+    public FragmentoHistoriaC() {
         // Required empty public constructor
     }
 
-    public static FragmentoTurnos newInstance() {
-        return new FragmentoTurnos();
+    public static FragmentoHistoriaC newInstance() {
+        return new FragmentoHistoriaC();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class FragmentoTurnos extends Fragment implements TurnosAdapter.OnTurnoAc
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragmento_turnos, container, false);
+        return inflater.inflate(R.layout.fragmento_historiac, container, false);
     }
 
     @Override

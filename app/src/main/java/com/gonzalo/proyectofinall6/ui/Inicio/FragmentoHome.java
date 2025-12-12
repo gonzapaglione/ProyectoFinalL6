@@ -1,8 +1,6 @@
 package com.gonzalo.proyectofinall6.ui.Inicio;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,19 +14,14 @@ import android.widget.Toast;
 
 import com.gonzalo.proyectofinall6.R;
 import com.gonzalo.proyectofinall6.ui.ReservaTurno.Reservacion;
-import com.gonzalo.proyectofinall6.data.remote.api.ApiService;
-import com.gonzalo.proyectofinall6.data.remote.api.RetrofitClient;
+import com.gonzalo.proyectofinall6.ui.viewmodels.HomeViewModel;
 import com.gonzalo.proyectofinall6.dominio.modelos.Paciente;
-import com.gonzalo.proyectofinall6.data.remote.dto.PacienteResponse;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import androidx.lifecycle.ViewModelProvider;
 
 public class FragmentoHome extends Fragment {
 
     private TextView tvGreeting;
-    private ApiService apiService;
+    private HomeViewModel homeViewModel;
 
     private Button btnReservarTurno;
 
@@ -39,12 +32,11 @@ public class FragmentoHome extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        apiService = RetrofitClient.getApiService();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragmento_home, container, false);
         tvGreeting = view.findViewById(R.id.tvGreeting);
         btnReservarTurno = view.findViewById(R.id.btnReservarTurno);
@@ -54,36 +46,26 @@ public class FragmentoHome extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadPatientData();
+
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+
+        homeViewModel.getPaciente().observe(getViewLifecycleOwner(), paciente -> {
+            if (paciente != null) {
+                tvGreeting.setText("Hola, " + paciente.getNombre());
+            }
+        });
+
+        homeViewModel.getError().observe(getViewLifecycleOwner(), error -> {
+            if (error != null) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        homeViewModel.loadPacienteActual();
 
         btnReservarTurno.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), Reservacion.class);
             startActivity(intent);
         });
-    }
-
-    private void loadPatientData() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        int patientIdInt = sharedPreferences.getInt("user_id", -1);
-
-        if (patientIdInt != -1) {
-            String patientId = String.valueOf(patientIdInt);
-            apiService.getPaciente(patientId).enqueue(new Callback<PacienteResponse>() {
-                @Override
-                public void onResponse(Call<PacienteResponse> call, Response<PacienteResponse> response) {
-                    if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-                        Paciente paciente = response.body().getData();
-                        tvGreeting.setText("Hola, " + paciente.getNombre());
-                    } else {
-                        Toast.makeText(getContext(), "Error al obtener los datos del paciente", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<PacienteResponse> call, Throwable t) {
-                    Toast.makeText(getContext(), "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
     }
 }

@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.gonzalo.proyectofinall6.data.repositorios.TurnosRepository;
@@ -16,15 +17,36 @@ import java.util.List;
 
 public class TurnosViewModel extends AndroidViewModel {
 
-    private final MutableLiveData<List<Turno>> proximosTurnos = new MutableLiveData<>();
-    private final MutableLiveData<List<Turno>> historialTurnos = new MutableLiveData<>();
+    private final MediatorLiveData<List<Turno>> proximosTurnos = new MediatorLiveData<>();
+    private final MediatorLiveData<List<Turno>> historialTurnos = new MediatorLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
     private final MutableLiveData<Boolean> turnoCancelado = new MutableLiveData<>();
     private final ITurnosRepository repository;
 
+    private final MediatorLiveData<RepositoryResult<ITurnosRepository.TurnosResumen>> turnosResumenResult = new MediatorLiveData<>();
+
+    private LiveData<RepositoryResult<ITurnosRepository.TurnosResumen>> turnosSource;
+    private LiveData<RepositoryResult<Void>> cancelarSource;
+
     public TurnosViewModel(@NonNull Application application) {
         super(application);
         this.repository = new TurnosRepository(application.getApplicationContext());
+
+        proximosTurnos.addSource(turnosResumenResult, result -> {
+            if (result == null)
+                return;
+            if (result.isSuccess() && result.getData() != null) {
+                proximosTurnos.setValue(result.getData().getProximos());
+            }
+        });
+
+        historialTurnos.addSource(turnosResumenResult, result -> {
+            if (result == null)
+                return;
+            if (result.isSuccess() && result.getData() != null) {
+                historialTurnos.setValue(result.getData().getHistorial());
+            }
+        });
     }
 
     public LiveData<List<Turno>> getProximosTurnos() {
@@ -44,26 +66,45 @@ public class TurnosViewModel extends AndroidViewModel {
     }
 
     public void loadTurnos() {
-        repository.getTurnosDelPacienteActual().observeForever(result -> {
+        if (turnosSource != null) {
+            turnosResumenResult.removeSource(turnosSource);
+        }
+
+        turnosSource = repository.getTurnosDelPacienteActual();
+        turnosResumenResult.addSource(turnosSource, result -> {
             if (result == null)
                 return;
+
             if (result.isSuccess() && result.getData() != null) {
-                proximosTurnos.postValue(result.getData().getProximos());
-                historialTurnos.postValue(result.getData().getHistorial());
+                turnosResumenResult.setValue(result);
             } else {
-                error.postValue(result.getError());
+                error.setValue(result.getError());
+            }
+
+            if (turnosSource != null) {
+                turnosResumenResult.removeSource(turnosSource);
             }
         });
     }
 
     public void cancelarTurno(int turnoId, String motivo) {
-        repository.cancelarTurno(turnoId, motivo).observeForever(result -> {
+        if (cancelarSource != null) {
+            // no-op: nothing to remove because we don't keep a mediator for cancel.
+            cancelarSource = null;
+        }
+
+        LiveData<RepositoryResult<Void>> source = repository.cancelarTurno(turnoId, motivo);
+        cancelarSource = source;
+
+        MediatorLiveData<RepositoryResult<Void>> mediator = new MediatorLiveData<>();
+        mediator.addSource(source, result -> {
             if (result != null && result.isSuccess()) {
-                turnoCancelado.postValue(true);
+                turnoCancelado.setValue(true);
                 loadTurnos();
             } else {
-                turnoCancelado.postValue(false);
+                turnoCancelado.setValue(false);
             }
+            mediator.removeSource(source);
         });
     }
 }

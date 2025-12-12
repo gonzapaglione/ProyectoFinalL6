@@ -1,7 +1,6 @@
 package com.gonzalo.proyectofinall6.ui;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -11,6 +10,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.gonzalo.proyectofinall6.R;
+import com.gonzalo.proyectofinall6.data.repositorios.SessionRepository;
 import com.gonzalo.proyectofinall6.ui.Inicio.HomeActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Chequea si el usuario está logueado
-        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        boolean isLoggedIn = sharedPreferences.getBoolean("is_logged_in", false);
+        SessionRepository sessionRepository = new SessionRepository(this);
+        boolean isLoggedIn = sessionRepository.isLoggedIn();
 
         if (isLoggedIn) {
             // Si está logueado, redirige a HomeActivity

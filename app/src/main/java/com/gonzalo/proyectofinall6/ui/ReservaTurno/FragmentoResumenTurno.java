@@ -16,11 +16,6 @@ import com.gonzalo.proyectofinall6.R;
 import com.gonzalo.proyectofinall6.databinding.FragmentoResumenTurnoBinding;
 import com.gonzalo.proyectofinall6.ui.viewmodels.ReservarViewModel;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 public class FragmentoResumenTurno extends Fragment {
 
     private FragmentoResumenTurnoBinding binding;
@@ -28,7 +23,8 @@ public class FragmentoResumenTurno extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         binding = FragmentoResumenTurnoBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -44,25 +40,10 @@ public class FragmentoResumenTurno extends Fragment {
     }
 
     private void observeViewModel() {
-        reservarViewModel.getFecha().observe(getViewLifecycleOwner(), fecha -> {
-            reservarViewModel.getHoraInicio().observe(getViewLifecycleOwner(), hora -> {
-                try {
-                    // Parse the date and time
-                    SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                    Date date = inputFormat.parse(fecha);
-
-                    SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE, dd 'de' MMMM", new Locale("es", "ES"));
-                    String formattedDate = dayFormat.format(date);
-
-                    // Format the time
-                    String formattedTime = hora.substring(0, 5) + " AM";
-
-                    binding.tvFechaHora.setText(formattedDate + " - " + formattedTime);
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            });
+        reservarViewModel.getFechaHoraFormateada().observe(getViewLifecycleOwner(), texto -> {
+            if (texto != null) {
+                binding.tvFechaHora.setText(texto);
+            }
         });
 
         reservarViewModel.getOdontologoNombre().observe(getViewLifecycleOwner(), nombre -> {
@@ -81,7 +62,8 @@ public class FragmentoResumenTurno extends Fragment {
             if (turnoResponse != null && turnoResponse.isSuccess()) {
                 Toast.makeText(getContext(), "Turno creado exitosamente", Toast.LENGTH_SHORT).show();
                 // Navigate to a success screen
-                NavHostFragment.findNavController(FragmentoResumenTurno.this).navigate(R.id.action_fragmentoResumenTurno_to_turnoRegistrado);
+                NavHostFragment.findNavController(FragmentoResumenTurno.this)
+                        .navigate(R.id.action_fragmentoResumenTurno_to_turnoRegistrado);
             } else {
                 Toast.makeText(getContext(), "Error al crear el turno", Toast.LENGTH_SHORT).show();
             }
