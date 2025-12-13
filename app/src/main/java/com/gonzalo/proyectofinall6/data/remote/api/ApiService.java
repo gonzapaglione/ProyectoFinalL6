@@ -4,6 +4,7 @@ import com.gonzalo.proyectofinall6.data.remote.dto.ApiResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.CancelarTurnoRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.EditarPacienteRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.GetOdontologosResponse;
+import com.gonzalo.proyectofinall6.data.remote.dto.HistoriaClinicaResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.HistorialResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.HorariosDisponiblesResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.LoginRequest;
@@ -82,5 +83,10 @@ public interface ApiService {
 
         @GET("api/valoraciones/odontologo/{idOdontologo}/promedio")
         Call<ApiResponse<PromedioValoracionResponse>> getPromedioValoracion(@Path("idOdontologo") int idOdontologo);
+
+        // Historia clínica
+
+        @GET("api/historia-clinica/turno/{idTurno}")
+        Call<ApiResponse<HistoriaClinicaResponse>> getHistoriaClinicaPorTurno(@Path("idTurno") int idTurno);
 
 }

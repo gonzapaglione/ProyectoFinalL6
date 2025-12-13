@@ -7,8 +7,10 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.gonzalo.proyectofinall6.data.repositorios.TurnosRepository;
+import com.gonzalo.proyectofinall6.data.remote.dto.HistoriaClinicaResponse;
 import com.gonzalo.proyectofinall6.dominio.irepositorios.ITurnosRepository;
 import com.gonzalo.proyectofinall6.dominio.modelos.RepositoryResult;
 import com.gonzalo.proyectofinall6.dominio.modelos.Turno;
@@ -23,6 +25,8 @@ public class TurnosViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> turnoCancelado = new MutableLiveData<>();
     private final MutableLiveData<Boolean> valoracionGuardada = new MutableLiveData<>();
     private final MutableLiveData<String> valoracionError = new MutableLiveData<>();
+    private final MutableLiveData<HistoriaClinicaResponse> historiaClinicaDetalle = new MutableLiveData<>();
+    private final MutableLiveData<String> historiaClinicaDetalleError = new MutableLiveData<>();
     private final ITurnosRepository repository;
 
     private final MediatorLiveData<RepositoryResult<ITurnosRepository.TurnosResumen>> turnosResumenResult = new MediatorLiveData<>();
@@ -30,6 +34,7 @@ public class TurnosViewModel extends AndroidViewModel {
     private LiveData<RepositoryResult<ITurnosRepository.TurnosResumen>> turnosSource;
     private LiveData<RepositoryResult<Void>> cancelarSource;
     private LiveData<RepositoryResult<Void>> valorarSource;
+    private LiveData<RepositoryResult<HistoriaClinicaResponse>> historiaClinicaSource;
 
     public TurnosViewModel(@NonNull Application application) {
         super(application);
@@ -74,6 +79,19 @@ public class TurnosViewModel extends AndroidViewModel {
 
     public LiveData<String> getValoracionError() {
         return valoracionError;
+    }
+
+    public LiveData<HistoriaClinicaResponse> getHistoriaClinicaDetalle() {
+        return historiaClinicaDetalle;
+    }
+
+    public LiveData<String> getHistoriaClinicaDetalleError() {
+        return historiaClinicaDetalleError;
+    }
+
+    public void clearHistoriaClinicaDetalleEvent() {
+        historiaClinicaDetalle.setValue(null);
+        historiaClinicaDetalleError.setValue(null);
     }
 
     public void loadTurnos() {
@@ -135,5 +153,29 @@ public class TurnosViewModel extends AndroidViewModel {
             }
             mediator.removeSource(source);
         });
+    }
+
+    public void cargarHistoriaClinicaPorTurno(int turnoId) {
+        clearHistoriaClinicaDetalleEvent();
+
+        LiveData<RepositoryResult<HistoriaClinicaResponse>> source = repository.getHistoriaClinicaPorTurno(turnoId);
+        historiaClinicaSource = source;
+
+        // One-shot observation. A plain MediatorLiveData would not run unless it has
+        // observers.
+        Observer<RepositoryResult<HistoriaClinicaResponse>> observer = new Observer<RepositoryResult<HistoriaClinicaResponse>>() {
+            @Override
+            public void onChanged(RepositoryResult<HistoriaClinicaResponse> result) {
+                if (result != null && result.isSuccess()) {
+                    historiaClinicaDetalle.setValue(result.getData());
+                } else {
+                    historiaClinicaDetalleError.setValue(result != null ? result.getError()
+                            : "Error al obtener la historia clínica");
+                }
+                source.removeObserver(this);
+            }
+        };
+
+        source.observeForever(observer);
     }
 }

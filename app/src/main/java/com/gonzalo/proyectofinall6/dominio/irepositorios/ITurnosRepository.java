@@ -3,6 +3,7 @@ package com.gonzalo.proyectofinall6.dominio.irepositorios;
 import androidx.lifecycle.LiveData;
 
 import com.gonzalo.proyectofinall6.data.remote.dto.ApiResponse;
+import com.gonzalo.proyectofinall6.data.remote.dto.HistoriaClinicaResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.HorarioDisponible;
 import com.gonzalo.proyectofinall6.data.remote.dto.MotivoConsulta;
 import com.gonzalo.proyectofinall6.data.remote.dto.OdontologoResponse;
@@ -49,4 +50,6 @@ public interface ITurnosRepository {
     LiveData<RepositoryResult<Void>> crearValoracion(int turnoId, int estrellas, String comentario);
 
     LiveData<RepositoryResult<PromedioValoracionResponse>> getPromedioValoracionOdontologo(int idOdontologo);
+
+    LiveData<RepositoryResult<HistoriaClinicaResponse>> getHistoriaClinicaPorTurno(int idTurno);
 }

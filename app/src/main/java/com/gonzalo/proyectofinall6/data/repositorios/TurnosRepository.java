@@ -11,6 +11,7 @@ import com.gonzalo.proyectofinall6.data.remote.dto.ApiResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.CancelarTurnoRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.CrearValoracionRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.GetOdontologosResponse;
+import com.gonzalo.proyectofinall6.data.remote.dto.HistoriaClinicaResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.HistorialResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.HorarioDisponible;
 import com.gonzalo.proyectofinall6.data.remote.dto.HorariosDisponiblesResponse;
@@ -188,6 +189,37 @@ public class TurnosRepository implements ITurnosRepository {
             @Override
             public void onFailure(Call<ApiResponse<TurnoResponse>> call, Throwable t) {
                 liveData.postValue(RepositoryResult.error("Error de red al crear el turno"));
+            }
+        });
+
+        return liveData;
+    }
+
+    @Override
+    public LiveData<RepositoryResult<HistoriaClinicaResponse>> getHistoriaClinicaPorTurno(int idTurno) {
+        MutableLiveData<RepositoryResult<HistoriaClinicaResponse>> liveData = new MutableLiveData<>();
+
+        apiService.getHistoriaClinicaPorTurno(idTurno).enqueue(new Callback<ApiResponse<HistoriaClinicaResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<HistoriaClinicaResponse>> call,
+                    Response<ApiResponse<HistoriaClinicaResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ApiResponse<HistoriaClinicaResponse> body = response.body();
+                    if (body.isSuccess() && body.getData() != null) {
+                        liveData.postValue(RepositoryResult.success(body.getData()));
+                    } else {
+                        String msg = body.getMessage() != null ? body.getMessage()
+                                : "No se pudo obtener la historia clínica";
+                        liveData.postValue(RepositoryResult.error(msg));
+                    }
+                } else {
+                    liveData.postValue(RepositoryResult.error("Error al obtener la historia clínica"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<HistoriaClinicaResponse>> call, Throwable t) {
+                liveData.postValue(RepositoryResult.error("Error de red al obtener la historia clínica"));
             }
         });
 

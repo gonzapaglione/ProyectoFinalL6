@@ -14,9 +14,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.gonzalo.proyectofinall6.R;
+import com.gonzalo.proyectofinall6.data.remote.dto.HistoriaClinicaResponse;
 import com.gonzalo.proyectofinall6.ui.ReservaTurno.Reservacion;
 import com.gonzalo.proyectofinall6.ui.adaptadores.TurnosAdapter;
 import com.gonzalo.proyectofinall6.ui.viewmodels.TurnosViewModel;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -133,6 +135,20 @@ public class FragmentoHistoriaC extends Fragment implements TurnosAdapter.OnTurn
                 Toast.makeText(getContext(), err, Toast.LENGTH_SHORT).show();
             }
         });
+
+        turnosViewModel.getHistoriaClinicaDetalle().observe(getViewLifecycleOwner(), detalle -> {
+            if (detalle != null) {
+                showDetalleHistoriaClinicaDialog(detalle);
+                turnosViewModel.clearHistoriaClinicaDetalleEvent();
+            }
+        });
+
+        turnosViewModel.getHistoriaClinicaDetalleError().observe(getViewLifecycleOwner(), err -> {
+            if (err != null) {
+                Toast.makeText(getContext(), err, Toast.LENGTH_SHORT).show();
+                turnosViewModel.clearHistoriaClinicaDetalleEvent();
+            }
+        });
     }
 
     private void showEmptyState() {
@@ -149,13 +165,45 @@ public class FragmentoHistoriaC extends Fragment implements TurnosAdapter.OnTurn
 
     @Override
     public void onVerDetalle(int turnoId) {
-        Toast.makeText(getContext(), "Viendo detalle del turno...", Toast.LENGTH_SHORT).show();
-        // TODO: Aquí debes implementar la navegación a la pantalla de detalle
-        // del turno, pasando el turnoId como argumento.
+        Toast.makeText(getContext(), "Cargando detalle del turno...", Toast.LENGTH_SHORT).show();
+        turnosViewModel.cargarHistoriaClinicaPorTurno(turnoId);
     }
 
     @Override
     public void onValorarTurno(int turnoId, int estrellas, String comentario) {
         turnosViewModel.valorarTurno(turnoId, estrellas, comentario);
+    }
+
+    private void showDetalleHistoriaClinicaDialog(HistoriaClinicaResponse detalle) {
+        if (!isAdded()) {
+            return;
+        }
+
+        String fechaHora = safe(detalle.getFechaTurno()) + " " + safe(detalle.getHoraTurno());
+        String paciente = (safe(detalle.getApellidoPaciente()) + " " + safe(detalle.getNombrePaciente())).trim();
+        String odontologo = (safe(detalle.getApellidoOdontologo()) + " " + safe(detalle.getNombreOdontologo())).trim();
+
+        String message = "Fecha/Hora: " + fechaHora +
+                "\nMotivo: " + safe(detalle.getMotivoConsulta()) +
+                "\n\nOdontólogo: " + (odontologo.isEmpty() ? "Sin datos" : odontologo) +
+                "\nPaciente: " + (paciente.isEmpty() ? "Sin datos" : paciente) +
+                "\nDNI: " + safe(detalle.getDniPaciente()) +
+                "\n\nDiagnóstico: " + safe(detalle.getDiagnostico()) +
+                "\nTratamiento: " + safe(detalle.getTratamientoRealizado()) +
+                "\nObservaciones: " + safe(detalle.getObservaciones());
+
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Detalle del turno")
+                .setMessage(message)
+                .setPositiveButton("Cerrar", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private String safe(String value) {
+        if (value == null) {
+            return "Sin datos";
+        }
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? "Sin datos" : trimmed;
     }
 }

@@ -46,12 +46,6 @@ public class FragmentoAboutUs extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
-                .findFragmentById(R.id.aboutMap);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
-        }
-
         RecyclerView recyclerView = view.findViewById(R.id.rvOdontologosAbout);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setNestedScrollingEnabled(false);
@@ -75,6 +69,16 @@ public class FragmentoAboutUs extends Fragment implements OnMapReadyCallback {
         });
 
         aboutUsViewModel.fetchOdontologos();
+
+        // Google Maps puede causar un micro-freeze al inicializarse (render/GL + tiles).
+        // Lo diferimos al próximo frame para que la transición se sienta más fluida.
+        view.post(() -> {
+            SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
+                    .findFragmentById(R.id.aboutMap);
+            if (mapFragment != null) {
+                mapFragment.getMapAsync(this);
+            }
+        });
     }
 
     @Override
