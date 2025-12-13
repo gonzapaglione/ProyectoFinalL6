@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+import java.util.Properties
+
 android {
     namespace = "com.gonzalo.proyectofinall6"
     compileSdk = 36
@@ -14,6 +16,17 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Google Maps: keep the API key out of source control.
+        // Add this line to ProyectoFinalL6/local.properties:
+        // MAPS_API_KEY=YOUR_KEY_HERE
+        val localProps = Properties().apply {
+            val localPropsFile = rootProject.file("local.properties")
+            if (localPropsFile.exists()) {
+                localPropsFile.inputStream().use { load(it) }
+            }
+        }
+        manifestPlaceholders["MAPS_API_KEY"] = localProps.getProperty("MAPS_API_KEY", "")
     }
 
     buildTypes {
@@ -49,6 +62,9 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation("androidx.navigation:navigation-ui-ktx:2.9.6")
     implementation(libs.navigation.ui)
+
+    // Google Maps SDK
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

@@ -35,13 +35,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <TextView
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/aboutMap"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:padding="16dp"
-                    android:text="@string/about_location_placeholder"
-                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
+                    android:layout_height="match_parent" />
 
             </FrameLayout>
 
