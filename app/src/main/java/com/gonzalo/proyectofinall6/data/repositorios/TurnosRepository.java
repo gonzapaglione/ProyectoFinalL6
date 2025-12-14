@@ -18,11 +18,13 @@ import com.gonzalo.proyectofinall6.data.remote.dto.HorariosDisponiblesResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.MotivoConsulta;
 import com.gonzalo.proyectofinall6.data.remote.dto.MotivosConsultaResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.OdontologoResponse;
+import com.gonzalo.proyectofinall6.data.remote.dto.PacienteTurnosStatsDto;
 import com.gonzalo.proyectofinall6.data.remote.dto.PacienteResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.PromedioValoracionResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.ProximosTurnosResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.TurnoRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.TurnoResponse;
+import com.gonzalo.proyectofinall6.data.remote.dto.TurnosHoyDto;
 import com.gonzalo.proyectofinall6.data.remote.dto.ValoracionResponse;
 import com.gonzalo.proyectofinall6.dominio.irepositorios.ISessionRepository;
 import com.gonzalo.proyectofinall6.dominio.irepositorios.ITurnosRepository;
@@ -53,6 +55,65 @@ public class TurnosRepository implements ITurnosRepository {
 
     private int getUserId() {
         return sessionRepository.getUserId();
+    }
+
+    public LiveData<RepositoryResult<TurnosHoyDto>> getTurnosHoyPacienteActual() {
+        MutableLiveData<RepositoryResult<TurnosHoyDto>> liveData = new MutableLiveData<>();
+
+        int userId = getUserId();
+        if (userId == -1) {
+            liveData.setValue(RepositoryResult.error("Error: No se pudo obtener el ID de usuario."));
+            return liveData;
+        }
+
+        apiService.getTurnosHoy(userId).enqueue(new Callback<ApiResponse<TurnosHoyDto>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<TurnosHoyDto>> call, Response<ApiResponse<TurnosHoyDto>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()
+                        && response.body().getData() != null) {
+                    liveData.postValue(RepositoryResult.success(response.body().getData()));
+                } else {
+                    liveData.postValue(RepositoryResult.error("Error al obtener turnos de hoy"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<TurnosHoyDto>> call, Throwable t) {
+                liveData.postValue(RepositoryResult.error("Error de red al obtener turnos de hoy"));
+            }
+        });
+
+        return liveData;
+    }
+
+    public LiveData<RepositoryResult<PacienteTurnosStatsDto>> getStatsTurnosPacienteActual() {
+        MutableLiveData<RepositoryResult<PacienteTurnosStatsDto>> liveData = new MutableLiveData<>();
+
+        int userId = getUserId();
+        if (userId == -1) {
+            liveData.setValue(RepositoryResult.error("Error: No se pudo obtener el ID de usuario."));
+            return liveData;
+        }
+
+        apiService.getTurnosStats(userId).enqueue(new Callback<ApiResponse<PacienteTurnosStatsDto>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<PacienteTurnosStatsDto>> call,
+                    Response<ApiResponse<PacienteTurnosStatsDto>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()
+                        && response.body().getData() != null) {
+                    liveData.postValue(RepositoryResult.success(response.body().getData()));
+                } else {
+                    liveData.postValue(RepositoryResult.error("Error al obtener estadísticas de turnos"));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<PacienteTurnosStatsDto>> call, Throwable t) {
+                liveData.postValue(RepositoryResult.error("Error de red al obtener estadísticas de turnos"));
+            }
+        });
+
+        return liveData;
     }
 
     @Override

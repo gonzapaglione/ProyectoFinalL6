@@ -21,6 +21,8 @@ import com.gonzalo.proyectofinall6.data.remote.dto.TurnoRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.TurnoResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.CrearValoracionRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.ValoracionResponse;
+import com.gonzalo.proyectofinall6.data.remote.dto.TurnosHoyDto;
+import com.gonzalo.proyectofinall6.data.remote.dto.PacienteTurnosStatsDto;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -88,5 +90,13 @@ public interface ApiService {
 
         @GET("api/historia-clinica/turno/{idTurno}")
         Call<ApiResponse<HistoriaClinicaResponse>> getHistoriaClinicaPorTurno(@Path("idTurno") int idTurno);
+
+        // Dashboard
+
+        @GET("api/dashboard/paciente/{id}/turnos-hoy")
+        Call<ApiResponse<TurnosHoyDto>> getTurnosHoy(@Path("id") int pacienteId);
+
+        @GET("api/dashboard/paciente/{id}/turnos/estadisticas")
+        Call<ApiResponse<PacienteTurnosStatsDto>> getTurnosStats(@Path("id") int pacienteId);
 
 }
