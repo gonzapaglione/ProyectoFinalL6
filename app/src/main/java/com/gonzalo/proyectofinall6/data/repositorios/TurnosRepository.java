@@ -207,17 +207,12 @@ public class TurnosRepository implements ITurnosRepository {
             return availableHorarios;
         }
 
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-        Date now = new Date();
+        // IMPORTANTE: el margen de 30 minutos ya lo aplica el backend.
+        // Evitamos re-filtrar en el cliente porque puede fallar por zona
+        // horaria/parsing.
         for (HorarioDisponible horario : allHorarios) {
-            if (horario == null || !horario.isDisponible())
-                continue;
-            try {
-                Date time = timeFormat.parse(horario.getHora());
-                if (time != null && time.after(now)) {
-                    availableHorarios.add(horario);
-                }
-            } catch (ParseException ignored) {
+            if (horario != null && horario.isDisponible()) {
+                availableHorarios.add(horario);
             }
         }
         return availableHorarios;

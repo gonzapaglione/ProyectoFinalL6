@@ -30,7 +30,8 @@ public class FragmentoPaso2 extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         binding = FragmentPaso2Binding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -50,7 +51,8 @@ public class FragmentoPaso2 extends Fragment {
                 adapter.updateData(horarios);
             } else {
                 adapter.updateData(new ArrayList<>());
-                Toast.makeText(getContext(), "No hay horarios disponibles para la fecha seleccionada", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "No hay horarios disponibles para la fecha seleccionada",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -59,22 +61,31 @@ public class FragmentoPaso2 extends Fragment {
         // Disable past dates
         binding.calendarView.setMinDate(System.currentTimeMillis());
 
+        // Preseleccionar HOY al entrar a la pantalla
+        Calendar today = Calendar.getInstance();
+        binding.calendarView.setDate(today.getTimeInMillis(), false, true);
+        aplicarSeleccionFecha(today);
+
         binding.calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             Calendar calendar = Calendar.getInstance();
             calendar.set(year, month, dayOfMonth);
-            
-            // Use Spanish locale for formatting dates
-            Locale spanishLocale = new Locale("es", "ES");
-            
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", spanishLocale);
-            String selectedDate = sdf.format(calendar.getTime());
-            reservarViewModel.setFecha(selectedDate);
-            reservarViewModel.fetchHorariosDisponibles();
 
-            SimpleDateFormat titleSdf = new SimpleDateFormat("dd 'de' MMMM", spanishLocale);
-            String title = "Horarios para el " + titleSdf.format(calendar.getTime());
-            binding.tvHorariosDisponibles.setText(title);
+            aplicarSeleccionFecha(calendar);
         });
+    }
+
+    private void aplicarSeleccionFecha(Calendar calendar) {
+        // Use Spanish locale for formatting dates
+        Locale spanishLocale = new Locale("es", "ES");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", spanishLocale);
+        String selectedDate = sdf.format(calendar.getTime());
+        reservarViewModel.setFecha(selectedDate);
+        reservarViewModel.fetchHorariosDisponibles();
+
+        SimpleDateFormat titleSdf = new SimpleDateFormat("dd 'de' MMMM", spanishLocale);
+        String title = "Horarios para el " + titleSdf.format(calendar.getTime());
+        binding.tvHorariosDisponibles.setText(title);
     }
 
     private void setupRecyclerView() {
