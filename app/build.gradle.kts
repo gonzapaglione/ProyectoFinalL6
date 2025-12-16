@@ -1,8 +1,9 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
-
-import java.util.Properties
 
 android {
     namespace = "com.gonzalo.proyectofinall6"
@@ -48,6 +49,8 @@ android {
 }
 
 dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:34.7.0"))
+    implementation("com.google.firebase:firebase-messaging")
 
     implementation(libs.appcompat)
     implementation(libs.material)

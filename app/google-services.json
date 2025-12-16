@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "148610683914",
+    "project_id": "clinica-app-41f1a",
+    "storage_bucket": "clinica-app-41f1a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:148610683914:android:d2d467820fb354c2c0fbf3",
+        "android_client_info": {
+          "package_name": "com.gonzalo.proyectofinall6"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANpUOe0LkrSD6FWd7PP62W5VOwCR8esQM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

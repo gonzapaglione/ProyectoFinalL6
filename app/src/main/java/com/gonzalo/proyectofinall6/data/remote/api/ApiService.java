@@ -3,6 +3,7 @@ package com.gonzalo.proyectofinall6.data.remote.api;
 import com.gonzalo.proyectofinall6.data.remote.dto.ApiResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.CancelarTurnoRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.EditarPacienteRequest;
+import com.gonzalo.proyectofinall6.data.remote.dto.FcmTokenRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.GetOdontologosResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.HistoriaClinicaResponse;
 import com.gonzalo.proyectofinall6.data.remote.dto.HistorialResponse;
@@ -60,6 +61,11 @@ public interface ApiService {
 
         @POST("api/turnos/cancelar")
         Call<Void> cancelarTurno(@Body CancelarTurnoRequest request);
+
+        // Notificaciones (FCM)
+
+        @POST("api/notificaciones/fcm-token")
+        Call<Void> registrarFcmToken(@Body FcmTokenRequest request);
 
         // Reserva de turnos
 

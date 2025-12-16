@@ -117,7 +117,7 @@
     <string name="no_hay_turnos_programados">No hay turnos programados</string>
     <string name="proximos_turnos">Próximos Turnos</string>
 
-    <string name="turno_cancelacion_fuera_de_horario">Los turnos solo se pueden cancelar hasta 3 horas antes.</string>
 
+    <string name="turno_cancelacion_fuera_de_horario">Los turnos solo se pueden cancelar hasta 3 horas antes.</string>
 
 </resources>

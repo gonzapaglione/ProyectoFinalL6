@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Firebase service accounts (DO NOT COMMIT)
+*firebase-adminsdk*.json
+clinica-app-*-firebase-adminsdk-*.json
