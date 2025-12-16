@@ -27,6 +27,7 @@ import com.gonzalo.proyectofinall6.data.remote.dto.PacienteTurnosStatsDto;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -66,6 +67,9 @@ public interface ApiService {
 
         @POST("api/notificaciones/fcm-token")
         Call<Void> registrarFcmToken(@Body FcmTokenRequest request);
+
+        @DELETE("api/notificaciones/fcm-token/paciente/{idPaciente}")
+        Call<Void> desregistrarFcmToken(@Path("idPaciente") int idPaciente);
 
         // Reserva de turnos
 

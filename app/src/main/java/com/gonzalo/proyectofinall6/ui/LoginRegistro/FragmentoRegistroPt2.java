@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.gonzalo.proyectofinall6.ui.viewmodels.RegistroViewModel;
+import com.gonzalo.proyectofinall6.data.repositorios.NotificacionesRepository;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.android.material.chip.Chip;
 import com.gonzalo.proyectofinall6.ui.Inicio.HomeActivity;
 import com.gonzalo.proyectofinall6.databinding.FragmentoRegistroPt2Binding;
@@ -108,7 +110,17 @@ public class FragmentoRegistroPt2 extends Fragment {
                 RegistroResponse response = result.getData();
                 Toast.makeText(getContext(), "Registro exitoso", Toast.LENGTH_SHORT).show();
 
-                sessionRepository.saveSession(response.getData().getIdPaciente(), true);
+                int idPaciente = response.getData().getIdPaciente();
+                // El registro deja al usuario "logueado" como paciente
+                sessionRepository.saveSession(idPaciente, idPaciente, "PACIENTE", true);
+
+                // Registrar token FCM para este paciente (si se pudo obtener)
+                FirebaseMessaging.getInstance().getToken()
+                        .addOnSuccessListener(
+                                token -> new NotificacionesRepository(requireContext()).registrarTokenFcm(token))
+                        .addOnFailureListener(e -> {
+                            // no-op: se reintentará en otro arranque/onNewToken
+                        });
 
                 Intent intent = new Intent(getActivity(), HomeActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

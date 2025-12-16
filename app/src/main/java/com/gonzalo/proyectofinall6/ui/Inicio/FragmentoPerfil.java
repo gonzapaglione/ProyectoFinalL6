@@ -28,6 +28,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.gonzalo.proyectofinall6.ui.MainActivity;
 import com.gonzalo.proyectofinall6.R;
 import com.gonzalo.proyectofinall6.data.remote.dto.EditarPacienteRequest;
+import com.gonzalo.proyectofinall6.data.repositorios.NotificacionesRepository;
 import com.gonzalo.proyectofinall6.data.repositorios.SessionRepository;
 import com.gonzalo.proyectofinall6.dominio.modelos.ObraSocial;
 import com.gonzalo.proyectofinall6.dominio.modelos.Paciente;
@@ -242,6 +243,10 @@ public class FragmentoPerfil extends Fragment {
                 .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        NotificacionesRepository notificacionesRepository = new NotificacionesRepository(
+                                requireContext());
+                        notificacionesRepository.desregistrarTokenFcm();
+                        notificacionesRepository.clearLocalTokenCache();
                         sessionRepository.clearSession();
 
                         Intent intent = new Intent(getActivity(), MainActivity.class);

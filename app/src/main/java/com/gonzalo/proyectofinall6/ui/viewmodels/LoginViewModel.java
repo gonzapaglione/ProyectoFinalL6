@@ -11,15 +11,16 @@ import androidx.lifecycle.MutableLiveData;
 import com.gonzalo.proyectofinall6.data.remote.dto.LoginRequest;
 import com.gonzalo.proyectofinall6.data.remote.dto.LoginResponse;
 import com.gonzalo.proyectofinall6.data.repositorios.AuthRepository;
+import com.gonzalo.proyectofinall6.data.repositorios.NotificacionesRepository;
 import com.gonzalo.proyectofinall6.data.repositorios.SessionRepository;
 import com.gonzalo.proyectofinall6.dominio.irepositorios.IAuthRepository;
-import com.gonzalo.proyectofinall6.dominio.irepositorios.ISessionRepository;
 import com.gonzalo.proyectofinall6.dominio.modelos.RepositoryResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class LoginViewModel extends AndroidViewModel {
 
     private final IAuthRepository authRepository;
-    private final ISessionRepository sessionRepository;
+    private final SessionRepository sessionRepository;
 
     private final MediatorLiveData<RepositoryResult<LoginResponse>> loginResult = new MediatorLiveData<>();
     private LiveData<RepositoryResult<LoginResponse>> loginSource;
@@ -50,11 +51,23 @@ public class LoginViewModel extends AndroidViewModel {
             if (result != null && result.isSuccess() && result.getData() != null
                     && result.getData().getData() != null) {
                 Integer idPaciente = result.getData().getData().getIdPaciente();
+                String rol = result.getData().getData().getRol();
                 int sessionId = (idPaciente != null && idPaciente > 0)
                         ? idPaciente
                         : result.getData().getData().getUserId();
 
-                sessionRepository.saveSession(sessionId, true);
+                sessionRepository.saveSession(sessionId, idPaciente, rol, true);
+
+                // Registrar token solo para pacientes (backend espera idPaciente)
+                if (idPaciente != null && idPaciente > 0) {
+                    FirebaseMessaging.getInstance().getToken()
+                            .addOnSuccessListener(
+                                    token -> new NotificacionesRepository(getApplication().getApplicationContext())
+                                            .registrarTokenFcm(token))
+                            .addOnFailureListener(e -> {
+                                // no-op: si falla, se reintentará en otro arranque/onNewToken
+                            });
+                }
             }
             loginResult.setValue(result);
 
