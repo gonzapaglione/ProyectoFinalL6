@@ -3,6 +3,7 @@ package com.gonzalo.proyectofinall6.ui.LoginRegistro;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FragmentoRegistroPt2 extends Fragment {
+
+    private static final String TAG = "RegistroPt2";
 
     private FragmentoRegistroPt2Binding binding;
     private List<ObraSocial> todasLasObrasSociales;
@@ -119,7 +122,7 @@ public class FragmentoRegistroPt2 extends Fragment {
                         .addOnSuccessListener(
                                 token -> new NotificacionesRepository(requireContext()).registrarTokenFcm(token))
                         .addOnFailureListener(e -> {
-                            // no-op: se reintentará en otro arranque/onNewToken
+                        Log.w(TAG, "No se pudo obtener token FCM en registro: " + (e != null ? e.getMessage() : "null"), e);
                         });
 
                 Intent intent = new Intent(getActivity(), HomeActivity.class);

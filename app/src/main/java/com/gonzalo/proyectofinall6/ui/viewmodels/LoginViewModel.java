@@ -16,8 +16,11 @@ import com.gonzalo.proyectofinall6.data.repositorios.SessionRepository;
 import com.gonzalo.proyectofinall6.dominio.irepositorios.IAuthRepository;
 import com.gonzalo.proyectofinall6.dominio.modelos.RepositoryResult;
 import com.google.firebase.messaging.FirebaseMessaging;
+import android.util.Log;
 
 public class LoginViewModel extends AndroidViewModel {
+
+    private static final String TAG = "LoginViewModel";
 
     private final IAuthRepository authRepository;
     private final SessionRepository sessionRepository;
@@ -65,7 +68,7 @@ public class LoginViewModel extends AndroidViewModel {
                                     token -> new NotificacionesRepository(getApplication().getApplicationContext())
                                             .registrarTokenFcm(token))
                             .addOnFailureListener(e -> {
-                                // no-op: si falla, se reintentará en otro arranque/onNewToken
+                                Log.w(TAG, "No se pudo obtener token FCM en login: " + (e != null ? e.getMessage() : "null"), e);
                             });
                 }
             }

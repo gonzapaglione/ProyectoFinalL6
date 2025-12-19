@@ -4,6 +4,7 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
+import android.util.Log;
 
 import com.gonzalo.proyectofinall6.data.repositorios.NotificacionesRepository;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -11,17 +12,20 @@ import com.google.firebase.messaging.FirebaseMessaging;
 public class MyApp extends Application {
 
     public static final String NOTIFICATION_CHANNEL_ID = "fcm_notifications";
+    private static final String TAG = "MyApp";
 
     @Override
     public void onCreate() {
         super.onCreate();
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
-                System.out.println("El token no fue generado");
+                Exception e = task.getException();
+                Log.e(TAG, "FCM token NO generado. exception=" + (e != null ? e.getClass().getName() : "null") +
+                        " message=" + (e != null ? e.getMessage() : "null"), e);
                 return;
             }
             String token = task.getResult();
-            System.out.println("El token es: " + token);
+            Log.i(TAG, "FCM token OK: " + token);
 
             // Registrar token en el backend para poder enviar push al cancelar turnos
             new NotificacionesRepository(getApplicationContext()).registrarTokenFcm(token);

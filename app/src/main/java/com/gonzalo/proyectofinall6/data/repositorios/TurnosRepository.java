@@ -31,6 +31,8 @@ import com.gonzalo.proyectofinall6.dominio.irepositorios.ITurnosRepository;
 import com.gonzalo.proyectofinall6.dominio.modelos.RepositoryResult;
 import com.gonzalo.proyectofinall6.dominio.modelos.Turno;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -207,14 +209,29 @@ public class TurnosRepository implements ITurnosRepository {
             return availableHorarios;
         }
 
-        // IMPORTANTE: el margen de 30 minutos ya lo aplica el backend.
-        // Evitamos re-filtrar en el cliente porque puede fallar por zona
-        // horaria/parsing.
+        // Si es HOY: filtrar por hora del DISPOSITIVO con margen de 30 min.
+        // Nota: usamos LocalTime (mismo día) porque acá ya estamos en "hoy".
+        LocalTime limite = LocalTime.now().plusMinutes(30);
         for (HorarioDisponible horario : allHorarios) {
-            if (horario != null && horario.isDisponible()) {
-                availableHorarios.add(horario);
+            if (horario == null || !horario.isDisponible() || horario.getHora() == null)
+                continue;
+
+            // Normalizamos: backend puede mandar HH:mm o HH:mm:ss
+            String horaStr = horario.getHora();
+            if (horaStr.length() >= 5) {
+                horaStr = horaStr.substring(0, 5);
+            }
+
+            try {
+                LocalTime hora = LocalTime.parse(horaStr);
+                if (!hora.isBefore(limite)) {
+                    availableHorarios.add(horario);
+                }
+            } catch (Exception ignored) {
+                // Si no se puede parsear, por seguridad NO lo mostramos
             }
         }
+
         return availableHorarios;
     }
 
